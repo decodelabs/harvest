@@ -10,10 +10,10 @@ declare(strict_types=1);
 namespace DecodeLabs\Harvest;
 
 use DecodeLabs\Exceptional;
-
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\MiddlewareInterface as Middleware;
+use Throwable;
 
 trait StageTrait
 {
@@ -33,10 +33,28 @@ trait StageTrait
     public function getNext(): Stage
     {
         if (!$this->next) {
-            return new class () implements Stage {
-                use StageTrait;
+            return new class() implements Stage {
+                public function handle(Request $request): Response
+                {
+                    throw $this->getException();
+                }
 
                 public function getMiddleware(): Middleware
+                {
+                    throw $this->getException();
+                }
+
+                public function getNext(): Stage
+                {
+                    throw $this->getException();
+                }
+
+                public function count(): int
+                {
+                    return 0;
+                }
+
+                private function getException(): Throwable
                 {
                     throw Exceptional::NotFound([
                         'message' => 'No middleware could handle the current request',

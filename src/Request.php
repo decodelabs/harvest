@@ -22,7 +22,7 @@ use Stringable;
 class Request implements ServerRequestInterface
 {
     use MessageTrait {
-        MessageTrait::__construct as private __messageConstruct;
+        MessageTrait::__construct as protected __messageConstruct;
     }
 
     public const METHODS = [

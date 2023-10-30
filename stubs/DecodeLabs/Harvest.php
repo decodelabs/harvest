@@ -12,6 +12,14 @@ use DecodeLabs\Singularity\Url as Ref0;
 use Psr\Http\Message\StreamInterface as Ref1;
 use DecodeLabs\Atlas\File as Ref2;
 use DecodeLabs\Harvest\Request as Ref3;
+use DecodeLabs\Deliverance\Channel\Stream as Ref4;
+use DecodeLabs\Harvest\Response\Stream as Ref5;
+use DecodeLabs\Harvest\Response\Text as Ref6;
+use DecodeLabs\Harvest\Response\Html as Ref7;
+use DecodeLabs\Harvest\Response\Json as Ref8;
+use DecodeLabs\Harvest\Response\Xml as Ref9;
+use Psr\Http\Message\UriInterface as Ref10;
+use DecodeLabs\Harvest\Response\Redirect as Ref11;
 
 class Harvest implements Proxy
 {
@@ -36,5 +44,23 @@ class Harvest implements Proxy
     }
     public static function createRequestFromEnvironment(?string $method = NULL, $uri = NULL, ?array $server = NULL): Ref3 {
         return static::$instance->createRequestFromEnvironment(...func_get_args());
+    }
+    public static function stream(Ref4|Ref1|string $body = 'php://memory', int $status = 200, array $headers = []): Ref5 {
+        return static::$instance->stream(...func_get_args());
+    }
+    public static function text(string $text, int $status = 200, array $headers = []): Ref6 {
+        return static::$instance->text(...func_get_args());
+    }
+    public static function html(string $html, int $status = 200, array $headers = []): Ref7 {
+        return static::$instance->html(...func_get_args());
+    }
+    public static function json(mixed $data, int $status = 200, array $headers = []): Ref8 {
+        return static::$instance->json(...func_get_args());
+    }
+    public static function xml(string $xml, int $status = 200, array $headers = []): Ref9 {
+        return static::$instance->xml(...func_get_args());
+    }
+    public static function redirect(Ref10|string $uri, int $status = 302, array $headers = []): Ref11 {
+        return static::$instance->redirect(...func_get_args());
     }
 };
