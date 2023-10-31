@@ -26,7 +26,7 @@ class Deferred implements Stage
     use StageTrait;
 
     /**
-     * @var class-string<Middleware>
+     * @var string|class-string<Middleware>
      */
     protected string $type;
 
@@ -35,7 +35,7 @@ class Deferred implements Stage
     /**
      * Init with middleware class name
      *
-     * @param class-string<Middleware> $type
+     * @param string|class-string<Middleware> $type
      */
     public function __construct(
         string $type,
