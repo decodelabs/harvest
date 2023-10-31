@@ -11,6 +11,7 @@ namespace DecodeLabs\Harvest;
 
 use DecodeLabs\Archetype;
 use DecodeLabs\Atlas\File;
+use DecodeLabs\Compass\Ip;
 use DecodeLabs\Deliverance\Channel\Stream as Channel;
 use DecodeLabs\Harvest;
 use DecodeLabs\Harvest\Message\Stream;
@@ -34,6 +35,7 @@ use Psr\Http\Message\UriFactoryInterface as UriFactory;
 use Psr\Http\Message\UriInterface;
 use Psr\Http\Server\MiddlewareInterface as Middleware;
 use Stringable;
+use Throwable;
 
 #[LazyLoad]
 class Context implements UriFactory
@@ -183,6 +185,43 @@ class Context implements UriFactory
         array $headers = []
     ): RedirectResponse {
         return new RedirectResponse($uri, $status, $headers);
+    }
+
+
+
+    /**
+     * Extract IP from request
+     */
+    public function extractIpFromRequest(
+        Request $request
+    ): Ip {
+        $ips = '';
+        $server = $request->getServerParams();
+
+        if (isset($server['HTTP_X_FORWARDED_FOR'])) {
+            $ips .= $server['HTTP_X_FORWARDED_FOR'] . ',';
+        }
+
+        if (isset($server['REMOTE_ADDR'])) {
+            $ips .= $server['REMOTE_ADDR'] . ',';
+        }
+
+        if (isset($server['HTTP_CLIENT_IP'])) {
+            $ips .= $server['HTTP_CLIENT_IP'] . ',';
+        }
+
+        $parts = explode(',', rtrim($ips, ','));
+
+        while (!empty($parts)) {
+            $ip = trim(array_shift($parts));
+
+            try {
+                return Ip::parse($ip);
+            } catch (Throwable $e) {
+            }
+        }
+
+        return new Ip('0.0.0.0');
     }
 }
 

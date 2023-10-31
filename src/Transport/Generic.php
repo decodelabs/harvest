@@ -23,6 +23,8 @@ class Generic implements Transport
     protected ?string $sendfile = null;
     protected bool $manualChunk = true;
 
+
+
     /**
      * Define sendfile header
      *
@@ -111,6 +113,14 @@ class Generic implements Transport
 
 
         // Hand off using x-sendfile
+        if (
+            $this->sendfile === null &&
+            isset($_SERVER['HTTP_X_SENDFILE_TYPE']) &&
+            $_SERVER['HTTP_X_SENDFILE_TYPE'] !== 'X-Accel-Redirect'
+        ) {
+            $this->sendfile = $_SERVER['HTTP_X_SENDFILE_TYPE'];
+        }
+
         if (
             $sendData &&
             $this->sendfile !== null &&

@@ -58,18 +58,32 @@ class Environment implements ServerRequestFactoryInterface
      * @param array<string, mixed> $server
      * @return array<string, mixed>
      */
-    public function prepareServerData(
+    public static function prepareServerData(
         array $server
     ): array {
+        // Extract apache headers
         if (
             function_exists('apache_request_headers') &&
             false !== ($apache = apache_request_headers())
         ) {
-            $apache = array_change_key_case($apache, CASE_LOWER);
-
-            if (isset($apache['authorization'])) {
-                $server['HTTP_AUTHORIZATION'] = $apache['authorization'];
+            foreach ($apache as $key => $value) {
+                $server['HTTP_' . strtoupper(str_replace('-', '_', (string)$key))] = $value;
             }
+        }
+
+        // Normalize CONTENT_TYPE
+        if (isset($server['CONTENT_TYPE'])) {
+            $server['HTTP_CONTENT_TYPE'] = $server['CONTENT_TYPE'];
+        }
+
+        // Normalize REQUEST_URI
+        if (isset($server['HTTP_X_ORIGINAL_URL'])) {
+            $server['REQUEST_URI'] = $server['HTTP_X_ORIGINAL_URL'];
+        }
+
+        // Normalize Cloudflare proxy
+        if (isset($server['HTTP_CF_CONNECTING_IP'])) {
+            $server['REMOTE_ADDR'] = $server['HTTP_CF_CONNECTING_IP'];
         }
 
         return $server;

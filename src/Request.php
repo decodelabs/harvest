@@ -9,8 +9,10 @@ declare(strict_types=1);
 
 namespace DecodeLabs\Harvest;
 
+use DecodeLabs\Compass\Ip;
 use DecodeLabs\Deliverance\Channel\Stream as Channel;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Harvest;
 use DecodeLabs\Singularity;
 use DecodeLabs\Singularity\Url;
 use Psr\Http\Message\ServerRequestInterface;
@@ -501,5 +503,14 @@ class Request implements ServerRequestInterface
     public function getParsedBody(): mixed
     {
         return $this->parsedBody;
+    }
+
+
+    /**
+     * Get IP address
+     */
+    public function getIp(): Ip
+    {
+        return Harvest::extractIpFromRequest($this);
     }
 }
