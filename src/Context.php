@@ -94,6 +94,17 @@ class Context implements UriFactory
     }
 
 
+    /**
+     * Create transport
+     */
+    public function createTransport(
+        ?string $name = null
+    ): Transport {
+        $class = Archetype::resolve(Transport::class, $name);
+        return new $class();
+    }
+
+
 
 
     /**
