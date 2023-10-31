@@ -30,6 +30,7 @@ use DecodeLabs\Veneer;
 use DecodeLabs\Veneer\LazyLoad;
 
 use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as ServerRequest;
 use Psr\Http\Message\StreamInterface as StreamInterface;
 use Psr\Http\Message\UriFactoryInterface as UriFactory;
 use Psr\Http\Message\UriInterface;
@@ -193,7 +194,7 @@ class Context implements UriFactory
      * Extract IP from request
      */
     public function extractIpFromRequest(
-        Request $request
+        ServerRequest $request
     ): Ip {
         $ips = '';
         $server = $request->getServerParams();

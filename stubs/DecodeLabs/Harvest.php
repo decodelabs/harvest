@@ -21,7 +21,8 @@ use DecodeLabs\Harvest\Response\Json as Ref9;
 use DecodeLabs\Harvest\Response\Xml as Ref10;
 use Psr\Http\Message\UriInterface as Ref11;
 use DecodeLabs\Harvest\Response\Redirect as Ref12;
-use DecodeLabs\Compass\Ip as Ref13;
+use Psr\Http\Message\ServerRequestInterface as Ref13;
+use DecodeLabs\Compass\Ip as Ref14;
 
 class Harvest implements Proxy
 {
@@ -68,7 +69,7 @@ class Harvest implements Proxy
     public static function redirect(Ref11|string $uri, int $status = 302, array $headers = []): Ref12 {
         return static::$instance->redirect(...func_get_args());
     }
-    public static function extractIpFromRequest(Ref3 $request): Ref13 {
+    public static function extractIpFromRequest(Ref13 $request): Ref14 {
         return static::$instance->extractIpFromRequest(...func_get_args());
     }
 };
