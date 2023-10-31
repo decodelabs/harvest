@@ -66,7 +66,7 @@ class Dispatcher implements
     /**
      * Add middleware to stack
      *
-     * @param class-string<Middleware>|Middleware|Closure(Request, Handler):Response|array<class-string<Middleware>|Middleware|Closure(Request, Handler):Response> ...$middlewares
+     * @param string|class-string<Middleware>|Middleware|Closure(Request, Handler):Response|array<string|class-string<Middleware>|Middleware|Closure(Request, Handler):Response> ...$middlewares
      *
      * @return $this
      */

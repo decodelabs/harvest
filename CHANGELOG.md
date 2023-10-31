@@ -1,3 +1,5 @@
+* Fixed Deferred type parameter hint
+
 ## v0.1.1 (2023-10-31)
 * Added IP support to Requests
 * Improved environment variable handling
