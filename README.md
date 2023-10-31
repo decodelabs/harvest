@@ -9,7 +9,7 @@
 
 ### PSR-15 HTTP stack without the mess
 
-Harvest provides ...
+Harvest provides a unified PSR-15 HTTP stack with a simple, expressive API.
 
 _Get news and updates on the [DecodeLabs blog](https://blog.decodelabs.com)._
 
