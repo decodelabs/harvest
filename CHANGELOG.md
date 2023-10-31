@@ -1,3 +1,5 @@
+* Fixed IP extract Request type
+
 ## v0.1.2 (2023-10-31)
 * Fixed Deferred type parameter hint
 
