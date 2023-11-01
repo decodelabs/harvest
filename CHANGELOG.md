@@ -1,3 +1,7 @@
+## v0.1.6 (2023-11-01)
+* Fixed upload file nesting
+* Clear URL Query in error handler Middleware
+
 ## v0.1.5 (2023-11-01)
 * Added ContentSecgurityPolicy Middleware
 * Added initial ErrorHandler implementation

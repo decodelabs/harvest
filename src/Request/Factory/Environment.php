@@ -109,7 +109,7 @@ class Environment implements ServerRequestFactoryInterface
             ) {
                 if (is_array($value['tmp_name'])) {
                     /** @var array<string, string|UploadedFileInterface|array<string, mixed>> $value */
-                    $output = array_merge($output, $this->normalizeNestedFiles($value));
+                    $output += $this->normalizeNestedFiles($value);
                 } else {
                     $output[$key] = $this->createUploadedFile($value);
                 }
@@ -157,18 +157,34 @@ class Environment implements ServerRequestFactoryInterface
     ): array {
         $output = [];
 
-        foreach (array_keys(Coercion::toArray($files['tmp_name'])) as $key) {
-            $output[Coercion::toString($key)] = $this->createUploadedFile([
-                'tmp_name' => Coercion::toArray($files['tmp_name'])[$key],
-                'size' => Coercion::toArray($files['size'])[$key],
-                'error' => Coercion::toArray($files['error'])[$key],
-                'name' => Coercion::toArray($files['name'])[$key],
-                'type' => Coercion::toArray($files['type'])[$key]
-            ]);
+        foreach ($files as $key => $value) {
+            $this->flattenNestedFiles($key, $value, $output);
         }
 
-        return $output;
+        return $this->prepareFiles($output);
     }
+
+    /**
+     * @param array<string, mixed> $output
+     */
+    protected function flattenNestedFiles(
+        string $key,
+        mixed $value,
+        array &$output
+    ): void {
+        if (is_array($value)) {
+            foreach ($value as $subKey => $subValue) {
+                if (!isset($output[$subKey])) {
+                    $output[$subKey] = [];
+                }
+
+                $this->flattenNestedFiles($key, $subValue, $output[$subKey]);
+            }
+        } else {
+            $output[$key] = $value;
+        }
+    }
+
 
 
     /**
