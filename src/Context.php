@@ -9,11 +9,13 @@ declare(strict_types=1);
 
 namespace DecodeLabs\Harvest;
 
+use Closure;
 use DecodeLabs\Archetype;
 use DecodeLabs\Atlas\File;
 use DecodeLabs\Compass\Ip;
 use DecodeLabs\Deliverance\Channel\Stream as Channel;
 use DecodeLabs\Harvest;
+use DecodeLabs\Harvest\Message\Generator;
 use DecodeLabs\Harvest\Message\Stream;
 use DecodeLabs\Harvest\Middleware as MiddlewareNamespace;
 use DecodeLabs\Harvest\Request\Factory\Environment as EnvironmentFactory;
@@ -28,7 +30,6 @@ use DecodeLabs\Singularity;
 use DecodeLabs\Singularity\Url;
 use DecodeLabs\Veneer;
 use DecodeLabs\Veneer\LazyLoad;
-
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as ServerRequest;
 use Psr\Http\Message\StreamInterface as StreamInterface;
@@ -186,6 +187,25 @@ class Context implements UriFactory
         array $headers = []
     ): RedirectResponse {
         return new RedirectResponse($uri, $status, $headers);
+    }
+
+
+    /**
+     * Create iteration response
+     *
+     * @param iterable<int|string, string>|Closure(Generator):(iterable<int|string, string>|null) $iterator
+     * @param array<string, string|Stringable|array<string|Stringable>> $headers
+     */
+    public function generator(
+        iterable|Closure $iterator,
+        int $status = 200,
+        array $headers = []
+    ): StreamResponse {
+        return $this->stream(
+            new Generator($iterator),
+            $status,
+            $headers
+        );
     }
 
 

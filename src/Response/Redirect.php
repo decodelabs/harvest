@@ -27,11 +27,25 @@ class Redirect extends Stream
         array $headers = []
     ) {
         parent::__construct(
-            MessageStream::fromString('', 'wb+'),
+            MessageStream::fromString(
+                $this->getContent($uri),
+                'wb+'
+            ),
             $status,
             $this->injectDefaultHeaders([
+                'content-type' => 'text/html; charset=utf-8',
                 'location' => [(string)Singularity::url((string)$uri)]
             ], $headers)
         );
+    }
+
+
+    protected function getContent(
+        string|UriInterface $uri
+    ): string {
+        return
+            '<html><head><title>Redirecting...</title></head><body>' .
+            '<p>Redirecting to <a href="' . $uri . '">' . $uri . '</a></p>' .
+            '</body></html>';
     }
 }

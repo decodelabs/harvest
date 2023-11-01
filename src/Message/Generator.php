@@ -11,19 +11,25 @@ namespace DecodeLabs\Harvest\Message;
 
 use ArrayIterator;
 use Closure;
+use DecodeLabs\Deliverance\DataReceiver;
+use DecodeLabs\Deliverance\DataReceiverTrait;
 use DecodeLabs\Exceptional;
-use Iterator;
+use Iterator as NativeIterator;
 use IteratorAggregate;
 use Psr\Http\Message\StreamInterface;
 use Throwable;
 use Traversable;
 
-class Generator implements StreamInterface
+class Generator implements
+    StreamInterface,
+    DataReceiver
 {
+    use DataReceiverTrait;
+
     /**
-     * @var Iterator<int|string, string>|null
+     * @var NativeIterator<int|string, string>|null
      */
-    protected ?Iterator $iterator;
+    protected ?NativeIterator $iterator;
 
     protected string $buffer = '';
     protected int $position = 0;
@@ -35,30 +41,36 @@ class Generator implements StreamInterface
     /**
      * Init with iterator
      *
-     * @param iterable<int|string, string>|Closure():iterable<int|string, string> $iterator
+     * @param iterable<int|string, string>|Closure(static):(iterable<int|string, string>|null) $iterator
      */
     public function __construct(
         iterable|Closure $iterator,
         bool $buffer = true
     ) {
-        if ($iterator instanceof Closure) {
-            $iterator = $iterator();
-        }
+        $this->iterator = (function () use ($iterator) {
+            if ($iterator instanceof Closure) {
+                $iterator = $iterator($this);
 
-        if (is_array($iterator)) {
-            $iterator = new ArrayIterator($iterator);
-        }
+                if ($iterator === null) {
+                    $iterator = [];
+                }
+            }
 
-        if (!$iterator instanceof Traversable) {
-            $iterator = new ArrayIterator([...$iterator]);
-        }
+            if (is_array($iterator)) {
+                $iterator = new ArrayIterator($iterator);
+            }
 
-        if ($iterator instanceof IteratorAggregate) {
-            $iterator = $iterator->getIterator();
-        }
+            if (!$iterator instanceof Traversable) {
+                $iterator = new ArrayIterator([...$iterator]);
+            }
 
-        /** @var Iterator $iterator */
-        $this->iterator = $iterator;
+            if ($iterator instanceof IteratorAggregate) {
+                $iterator = $iterator->getIterator();
+            }
+
+            yield from $iterator;
+        })();
+
         $this->bufferAll = $buffer;
     }
 
@@ -121,19 +133,28 @@ class Generator implements StreamInterface
      */
     public function isWritable(): bool
     {
-        return false;
+        return true;
     }
 
     /**
      * Try and write to stream
      */
     public function write(
-        string $string
+        ?string $string,
+        ?int $length = null
     ): int {
-        throw Exceptional::Runtime(
-            'Iterators cannot be written to'
-        );
+        if ($string === null) {
+            return 0;
+        }
+
+        if ($length !== null) {
+            $string = substr($string, 0, $length);
+        }
+
+        $this->buffer .= $string;
+        return strlen($string);
     }
+
 
     /**
      * Can we read from this stream?
@@ -272,9 +293,9 @@ class Generator implements StreamInterface
     /**
      * Detach iterator from stream
      *
-     * @return Iterator<int|string, string>|null
+     * @return NativeIterator<int|string, string>|null
      */
-    public function detach(): ?Iterator
+    public function detach(): ?NativeIterator
     {
         $output = $this->iterator;
         $this->iterator = null;
