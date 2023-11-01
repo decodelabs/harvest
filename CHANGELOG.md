@@ -1,3 +1,5 @@
+* Added ContentSecgurityPolicy Middleware
+
 ## v0.1.4 (2023-11-01)
 * Removed time limit when sending responses
 * Added body HTML message to redirect response

@@ -25,9 +25,14 @@
         "psr/http-server-middleware": "^1.0"
     },
     "require-dev": {
+        "decodelabs/atlas": "^0.11.0",
         "decodelabs/glitch": "^0.18.9",
-        "decodelabs/phpstan-decodelabs": "^0.6.7",
-        "decodelabs/atlas": "^0.11.0"
+        "decodelabs/pandora": "^0.2.11",
+        "decodelabs/sanctum": "^0.1.4",
+        "decodelabs/phpstan-decodelabs": "^0.6.7"
+    },
+    "suggest": {
+        "decodelabs/sanctum": "Content security policy support"
     },
     "autoload": {
         "psr-4": {
