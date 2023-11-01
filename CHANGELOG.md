@@ -1,5 +1,7 @@
 * Removed time limit when sending responses
 * Added body HTML message to redirect response
+* Improved Generator message type
+* Added generator shortcut to Context
 
 ## v0.1.3 (2023-10-31)
 * Fixed IP extract Request type
