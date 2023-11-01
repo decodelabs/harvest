@@ -1,4 +1,5 @@
 * Added ContentSecgurityPolicy Middleware
+* Added initial ErrorHandler implementation
 
 ## v0.1.4 (2023-11-01)
 * Removed time limit when sending responses
