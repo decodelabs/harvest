@@ -50,7 +50,8 @@ class ErrorHandler implements Middleware
             }
 
             $url = $request->getUri()
-                ->withPath('/error/' . $code);
+                ->withPath('/error/' . $code)
+                ->withQuery('');
 
             $errorRequest = $request
                 ->withAttribute('error', $e)
