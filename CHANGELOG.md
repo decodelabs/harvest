@@ -1,3 +1,5 @@
+* Removed time limit when sending responses
+
 ## v0.1.3 (2023-10-31)
 * Fixed IP extract Request type
 

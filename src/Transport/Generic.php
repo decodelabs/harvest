@@ -160,6 +160,7 @@ class Generic implements Transport
         }
 
         flush();
+        set_time_limit(0);
 
         $isChunked = $this->manualChunk ?
             $response->getHeaderLine('transfer-encoding') == 'chunked' :
