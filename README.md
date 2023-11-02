@@ -9,7 +9,7 @@
 
 ### PSR-15 HTTP stack without the mess
 
-Harvest provides a unified PSR-15 HTTP stack with a simple, expressive API.
+Harvest provides a unified PSR-15 HTTP stack with a simple, expressive API on top of PHP Fibers to avoid common pitfalls of other PSR-15 implementations such as call stack size, memory usage and Middleware traversal.
 
 _Get news and updates on the [DecodeLabs blog](https://blog.decodelabs.com)._
 

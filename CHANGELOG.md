@@ -1,3 +1,7 @@
+## v0.2.0 (2023-11-02)
+* Converted Dispatcher to use flat Fiber structure
+* Added priority ordering to Stages
+
 ## v0.1.6 (2023-11-01)
 * Fixed upload file nesting
 * Clear URL Query in error handler Middleware

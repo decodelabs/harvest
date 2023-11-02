@@ -39,12 +39,19 @@ class Deferred implements Stage
      */
     public function __construct(
         string $type,
-        ?Container $container = null,
-        ?Stage $next = null
+        ?Container $container = null
     ) {
-        $this->type = $type;
+        [$type, $priority] = explode(':', $type, 2) + [$type, null];
+
+        $this->type = (string)$type;
         $this->container = $container;
-        $this->next = $next;
+
+        if (
+            $priority !== null &&
+            is_numeric($priority)
+        ) {
+            $this->priority = (int)$priority;
+        }
     }
 
     /**
