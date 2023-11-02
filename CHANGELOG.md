@@ -1,3 +1,4 @@
+## v0.2.0 (2023-11-02)
 * Converted Dispatcher to use flat Fiber structure
 * Added priority ordering to Stages
 
