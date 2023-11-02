@@ -13,14 +13,26 @@ use DecodeLabs\Exceptional;
 use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Proxy as GlitchProxy;
 use DecodeLabs\Harvest;
+use DecodeLabs\Harvest\PriorityProvider;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\MiddlewareInterface as Middleware;
 use Psr\Http\Server\RequestHandlerInterface as Handler;
 use Throwable;
 
-class ErrorHandler implements Middleware
+class ErrorHandler implements
+    Middleware,
+    PriorityProvider
 {
+    /**
+     * Get default priority
+     */
+    public function getPriority(): int
+    {
+        return -100;
+    }
+
+
     /**
      * Process middleware
      */

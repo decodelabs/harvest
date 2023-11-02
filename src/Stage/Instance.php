@@ -21,11 +21,9 @@ class Instance implements Stage
     protected Middleware $middleware;
 
     public function __construct(
-        Middleware $middleware,
-        ?Stage $next = null
+        Middleware $middleware
     ) {
         $this->middleware = $middleware;
-        $this->next = $next;
     }
 
     /**

@@ -28,11 +28,9 @@ class Closure implements Stage
      * Init with closure
      */
     public function __construct(
-        Callback $closure,
-        ?Stage $next = null
+        Callback $closure
     ) {
         $this->closure = $closure;
-        $this->next = $next;
     }
 
     /**
