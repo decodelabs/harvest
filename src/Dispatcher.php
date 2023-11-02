@@ -24,6 +24,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\MiddlewareInterface as Middleware;
 use Psr\Http\Server\RequestHandlerInterface as Handler;
+use Throwable;
 
 /**
  * @implements IteratorAggregate<Stage>
@@ -86,7 +87,33 @@ class Dispatcher implements
                     'fiber' => $fiber
                 ];
 
-                if ($request = $fiber->start($request)) {
+                try {
+                    $request = $fiber->start($request);
+                } catch (Throwable $e) {
+                    $request = null;
+                    array_pop($stack);
+                    $pos--;
+
+                    while (!empty($stack)) {
+                        [
+                            'stage' => $stage,
+                            'fiber' => $fiber
+                        ] = array_pop($stack);
+                        $pos--;
+
+                        try {
+                            $request = $fiber->throw($e);
+                        } catch (Throwable $e) {
+                            continue;
+                        }
+                    }
+
+                    if (!$request instanceof Request) {
+                        throw $e;
+                    }
+                }
+
+                if ($request) {
                     $shift = 1;
 
                     if (!isset($this->stages[$pos + $shift])) {
@@ -119,7 +146,11 @@ class Dispatcher implements
                 'fiber' => $fiber
             ] = $stack[$pos + $shift];
 
-            $fiber->resume($response);
+            try {
+                $fiber->resume($response);
+            } catch (Throwable $e) {
+                $fiber->throw($e);
+            }
         }
 
         if (!$response instanceof Response) {
