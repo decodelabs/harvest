@@ -164,8 +164,9 @@ class Request implements ServerRequestInterface
     /**
      * Check method
      */
-    public static function isValidMethod(?string $method): bool
-    {
+    public static function isValidMethod(
+        ?string $method
+    ): bool {
         return in_array($method, static::METHODS);
     }
 
@@ -340,8 +341,9 @@ class Request implements ServerRequestInterface
     /**
      * Is $cookie set?
      */
-    public function hasCookieParam(string $key): bool
-    {
+    public function hasCookieParam(
+        string $key
+    ): bool {
         return isset($this->cookies[$key]);
     }
 
@@ -474,8 +476,9 @@ class Request implements ServerRequestInterface
     /**
      * Is $key in $server?
      */
-    public function hasServerParam(string $key): bool
-    {
+    public function hasServerParam(
+        string $key
+    ): bool {
         return isset($this->server[$key]);
     }
 

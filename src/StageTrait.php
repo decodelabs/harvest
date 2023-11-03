@@ -57,8 +57,9 @@ trait StageTrait
     /**
      * Fiber interchange
      */
-    public function handle(Request $request): Response
-    {
+    public function handle(
+        Request $request
+    ): Response {
         $response = Fiber::suspend($request);
 
         if (!$response instanceof Response) {
@@ -73,8 +74,9 @@ trait StageTrait
     /**
      * Process middleware
      */
-    public function run(Request $request): Response
-    {
+    public function run(
+        Request $request
+    ): Response {
         return $this->getMiddleware()->process($request, $this);
     }
 }
