@@ -16,10 +16,16 @@ use Psr\Http\Server\RequestHandlerInterface as Handler;
 
 interface Stage extends Handler
 {
-    public function setPriority(?int $priority): Stage;
+    public function setPriority(
+        ?int $priority
+    ): Stage;
+
     public function getPriority(): int;
     public function getDefaultPriority(): int;
 
     public function getMiddleware(): Middleware;
-    public function run(Request $handler): Response;
+
+    public function run(
+        Request $handler
+    ): Response;
 }

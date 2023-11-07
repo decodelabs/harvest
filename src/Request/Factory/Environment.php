@@ -382,8 +382,9 @@ class Environment implements ServerRequestFactoryInterface
      *
      * @return array<string, string>
      */
-    public function parseCookies(string $string): array
-    {
+    public function parseCookies(
+        string $string
+    ): array {
         preg_match_all('(
             (?:^\\n?[ \t]*|;[ ])
             (?P<name>[!#$%&\'*+-.0-9A-Z^_`a-z|~]+)

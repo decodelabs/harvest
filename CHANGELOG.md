@@ -1,3 +1,6 @@
+## v0.2.2 (2023-11-07)
+* Added HTTPS Middleware
+
 ## v0.2.1 (2023-11-02)
 * Fixed Fiber stack Exception handling
 
