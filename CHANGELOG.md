@@ -1,3 +1,6 @@
+## v0.2.4 (2023-11-08)
+* Added nominal Response interface
+
 ## v0.2.3 (2023-11-08)
 * Fixed Exception stack handling in Dispatcher
 * Added permanence methods to Redirect responses
