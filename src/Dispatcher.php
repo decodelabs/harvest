@@ -74,60 +74,74 @@ class Dispatcher implements
             $pos + $shift >= 0 &&
             isset($this->stages[$pos + $shift])
         ) {
+            $e = null;
             $pos += $shift;
 
             if ($shift > 0) {
                 $stage = $this->stages[$pos];
 
-                /** @var Fiber<Request,Response,Response,Request> $fiber */
-                $fiber = new Fiber([$stage, 'run']);
-
                 $stack[$pos] = [
                     'stage' => $stage,
-                    'fiber' => $fiber
+                    'fiber' => $fiber = new Fiber([$stage, 'run'])
                 ];
+            } else {
+                [
+                    'stage' => $stage,
+                    'fiber' => $fiber
+                ] = $stack[$pos];
+            }
 
-                try {
+            /**
+             * @var Fiber<Request,Response,Response,Request> $fiber
+             */
+
+            try {
+                if ($fiber->isSuspended()) {
+                    $request = $fiber->resume($response);
+                } else {
                     $request = $fiber->start($request);
-                } catch (Throwable $e) {
-                    $request = null;
-                    array_pop($stack);
-                    $pos--;
+                }
+            } catch (Throwable $e) {
+                $request = null;
+                array_pop($stack);
+                $pos--;
 
-                    while (!empty($stack)) {
-                        [
-                            'stage' => $stage,
-                            'fiber' => $fiber
-                        ] = array_pop($stack);
-                        $pos--;
+                while (!empty($stack)) {
+                    [
+                        'stage' => $stage,
+                        'fiber' => $fiber
+                    ] = $stack[$pos];
 
-                        try {
-                            $request = $fiber->throw($e);
-                        } catch (Throwable $e) {
-                            continue;
+
+                    try {
+                        $request = $fiber->throw($e);
+                        break;
+                    } catch (Throwable $e) {
+                        if ($pos === 0) {
+                            throw $e;
                         }
                     }
 
-                    if (!$request instanceof Request) {
-                        throw $e;
-                    }
-                }
-
-                if ($request) {
-                    $shift = 1;
-
-                    if (!isset($this->stages[$pos + $shift])) {
-                        throw Exceptional::NotFound([
-                            'message' => 'No middleware could handle the current request',
-                            'http' => 404
-                        ]);
-                    }
-
-                    continue;
+                    array_pop($stack);
+                    $pos--;
                 }
             }
 
-            if (!isset($fiber)) {
+            if ($request) {
+                $shift = 1;
+
+                if (!isset($this->stages[$pos + $shift])) {
+                    throw Exceptional::NotFound([
+                        'message' => 'No middleware could handle the current request',
+                        'http' => 404
+                    ]);
+                }
+
+                continue;
+            }
+
+
+            if (!$fiber->isTerminated()) {
                 throw Exceptional::Runtime(
                     'Middleware stack has been corrupted'
                 );
@@ -139,17 +153,6 @@ class Dispatcher implements
 
             if (empty($stack)) {
                 break;
-            }
-
-            [
-                'stage' => $stage,
-                'fiber' => $fiber
-            ] = $stack[$pos + $shift];
-
-            try {
-                $fiber->resume($response);
-            } catch (Throwable $e) {
-                $fiber->throw($e);
             }
         }
 
