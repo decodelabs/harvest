@@ -40,6 +40,30 @@ class Redirect extends Stream
     }
 
 
+    /**
+     * Set permanent
+     */
+    public function asPermanent(
+        bool $permanent
+    ): static {
+        $target = $permanent ? 301 : 302;
+
+        if ($target === $this->getStatusCode()) {
+            return $this;
+        }
+
+        return $this->withStatus($target);
+    }
+
+    /**
+     * Is permanent
+     */
+    public function isPermanent(): bool
+    {
+        return $this->getStatusCode() === 301;
+    }
+
+
     protected function getContent(
         string|UriInterface $uri
     ): string {

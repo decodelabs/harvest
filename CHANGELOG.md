@@ -1,3 +1,5 @@
+* Added permanence methods to Redirect responses
+
 ## v0.2.2 (2023-11-07)
 * Added HTTPS Middleware
 
