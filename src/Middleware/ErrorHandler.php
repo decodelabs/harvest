@@ -13,6 +13,7 @@ use DecodeLabs\Exceptional;
 use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Proxy as GlitchProxy;
 use DecodeLabs\Harvest;
+use DecodeLabs\Harvest\NotFoundException;
 use DecodeLabs\Harvest\PriorityProvider;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -81,7 +82,10 @@ class ErrorHandler implements
         Request $request
     ): Response {
         if (class_exists(Glitch::class)) {
-            Glitch::handleException($f);
+            Glitch::handleException(
+                $f instanceof NotFoundException ?
+                    $e : $f
+            );
             exit;
         }
 
