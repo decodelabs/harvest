@@ -65,6 +65,17 @@ class Dispatcher implements
 
         $this->sortStages();
 
+        $stages = $this->stages;
+        $stages[] = new ClosureStage(function (
+            Request $request,
+            Handler $handler
+        ) {
+            throw Exceptional::NotFound([
+                'message' => 'No middleware could handle the current request',
+                'http' => 404
+            ]);
+        });
+
         $stack = [];
         $pos = -1;
         $shift = 1;
@@ -72,13 +83,13 @@ class Dispatcher implements
 
         while (
             $pos + $shift >= 0 &&
-            isset($this->stages[$pos + $shift])
+            isset($stages[$pos + $shift])
         ) {
             $e = null;
             $pos += $shift;
 
             if ($shift > 0) {
-                $stage = $this->stages[$pos];
+                $stage = $stages[$pos];
 
                 $stack[$pos] = [
                     'stage' => $stage,
@@ -130,7 +141,7 @@ class Dispatcher implements
             if ($request) {
                 $shift = 1;
 
-                if (!isset($this->stages[$pos + $shift])) {
+                if (!isset($stages[$pos + $shift])) {
                     throw Exceptional::NotFound([
                         'message' => 'No middleware could handle the current request',
                         'http' => 404

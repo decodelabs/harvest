@@ -1,3 +1,5 @@
+* Fixed end-of-stack Exception handling
+
 ## v0.2.4 (2023-11-08)
 * Added nominal Response interface
 
