@@ -1,3 +1,4 @@
+## v0.2.6 (2023-11-18)
 * Improved live generator responses
 
 ## v0.2.5 (2023-11-08)
