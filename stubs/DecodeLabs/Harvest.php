@@ -73,6 +73,9 @@ class Harvest implements Proxy
     public static function generator(Ref13|iterable $iterator, int $status = 200, array $headers = []): Ref6 {
         return static::$instance->generator(...func_get_args());
     }
+    public static function liveGenerator(Ref13|iterable $iterator, int $status = 200, array $headers = []): Ref6 {
+        return static::$instance->liveGenerator(...func_get_args());
+    }
     public static function extractIpFromRequest(Ref14 $request): Ref15 {
         return static::$instance->extractIpFromRequest(...func_get_args());
     }

@@ -25,7 +25,108 @@ composer require decodelabs/harvest
 
 ## Usage
 
-Coming soon...
+Harvest provides the full PSR-15 stack, including Request, Response, Middleware and Handler interfaces.
+
+```php
+use DecodeLabs\Harvest;
+use DecodeLabs\Harvest\Dispatcher;
+use DecodeLabs\Harvest\Middleware\ContentSecurityPolicy;
+
+// Create a Dispatcher
+$dispatcher = new Dispatcher(
+    $myPsrContainer // Ideally initialize with a PSR-11 container
+);
+
+// Add middleware
+$dispatcher->add(
+    'ErrorHandler', // Resolve by name via container / Archetype
+
+    new ContentSecurityPolicy(), // Add middleware instance
+
+    function($request, $handler) {
+        // Add middleware callback
+        // $handler is the next middleware in the stack
+        // $request is the current request
+
+        // Return a response
+        return Harvest::text('Hello World!');
+    }
+);
+
+$request = Harvest::createRequestFromEnvironment();
+$response = $dispatcher->dispatch($request);
+```
+
+String names passed to the Dispatcher will resolve via the optional PSR Container and then Archetype which has a default mapping for <code>DecodeLabs\Harvest\Middleware</code> but can easily be extended with:
+
+```php
+use DecodeLabs\Archetype;
+use DecodeLabs\Harvest\Middleware;
+
+Archetype::extend(Middleware::class, MyMiddlewareNamespace::class);
+```
+
+### Fibers
+
+Harvest uses PHP Fibers to _flatten_ the call stack within the dispatch loop - this makes for considerably less _noise_ when debugging and understanding Exception call stacks.
+
+Instead of a call stack that grows by at least 2 frames for every Middleware instance in the queue (which gets problematic very quickly), Harvest utilises the flexbility of Fibers to break out of the stack at each call to the _next_ HTTP handler and effectively run each Middleware as if it were in a flat list, but without breaking Exception handling or any of the semantics of stacking the Middleware contexts.
+
+### Transports
+
+Once a Response has been generated, you can then use an instance of a Harvest <code>Transport</code> to send it to the client.
+
+Harvest currently provides a Generic Transport implementation that uses PHP's built in header and output stream functions.
+
+```php
+use DecodeLabs\Harvest;
+
+$transport = Harvest::createTransport(
+    // $name - a null name will default to the Generic transport
+);
+
+$transport->sendResponse(
+    $request, $response
+);
+
+exit;
+```
+
+### Responses
+
+Harvest provides easy shortcuts for creating Response instances:
+
+```php
+use DecodeLabs\Harvest;
+
+$text = Harvest::text('Hello World!'); // Text
+
+$customText = Harvest::text('Hello World!', 201, [
+    'Custom-Header' => 'header-value'
+]);
+
+$html = Harvest::html('<h1>Hello World!</h1>'); // HTML
+
+$json = Harvest::json([
+    'whatever-data' => 'Hello World!'
+]); // JSON
+
+$xml = Harvest::xml($xmlString); // XML
+
+$redirect = Harvest::redirect('/some/other/path'); // Redirect
+
+$file = Harvest::stream('/path/to/file'); // Stream
+
+$resource = Harvest::stream(Harvest::createStreamFromResource($resource)); // Stream
+
+$generator = Harvest::generator(function() {
+    yield 'Custom content';
+    yield ' can be written';
+    yield ' from a generator';
+}, 200, [
+    'Content-Type' => 'text/plain'
+]);
+```
 
 ## Licensing
 
