@@ -168,7 +168,7 @@ class Generator implements
     /**
      * Read from stream
      * If $bufferAll, the iterator is iterated until the buffer can send $length
-     * otherise it's iterated once on each call
+     * otherwise it's iterated once on each call
      */
     public function read(
         int $length

@@ -369,7 +369,7 @@ class Environment implements ServerRequestFactoryInterface
 
         if (!preg_match('#^(HTTP/)?(?P<version>[1-9]\d*(?:\.\d)?)$#', $output, $matches)) {
             throw Exceptional::UnexpectedValue(
-                'Unrecognized HTTP protocal version: ' . $output
+                'Unrecognized HTTP protocol version: ' . $output
             );
         }
 
