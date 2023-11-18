@@ -35,6 +35,7 @@ class Generator implements
     protected int $position = 0;
     protected bool $eof = false;
     protected bool $complete = false;
+    protected bool $started = false;
     protected bool $bufferAll = true;
 
 
@@ -190,8 +191,12 @@ class Generator implements
             strlen($this->buffer) < $length
         ) {
             do {
+                if ($this->started) {
+                    $this->iterator->next();
+                }
+
                 $this->buffer .= (string)$this->iterator->current();
-                $this->iterator->next();
+                $this->started = true;
 
                 if (!$this->iterator->valid()) {
                     $this->complete = true;
@@ -205,14 +210,14 @@ class Generator implements
 
         $output = substr($this->buffer, 0, $length);
 
-        if (!empty($this->buffer)) {
+        if ($this->buffer !== '') {
             $this->buffer = substr($this->buffer, $outLength = strlen($output));
             $this->position += $outLength;
         }
 
         if (
             $this->complete &&
-            empty($this->buffer)
+            $this->buffer === ''
         ) {
             $this->eof = true;
         }

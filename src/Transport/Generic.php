@@ -21,7 +21,7 @@ class Generic implements Transport
     ];
 
     protected ?string $sendfile = null;
-    protected bool $manualChunk = true;
+    protected bool $manualChunk = false;
 
 
 
@@ -160,6 +160,7 @@ class Generic implements Transport
         }
 
         flush();
+        ob_flush();
         set_time_limit(0);
 
         $isChunked = $this->manualChunk ?
@@ -173,9 +174,11 @@ class Generic implements Transport
                 echo dechex(strlen($chunk)) . "\r\n";
                 echo $chunk . "\r\n";
                 flush();
+                ob_flush();
             } else {
                 echo $chunk;
                 flush();
+                ob_flush();
             }
         }
 
@@ -183,6 +186,7 @@ class Generic implements Transport
         if ($isChunked) {
             echo "0\r\n\r\n";
             flush();
+            ob_flush();
         }
     }
 }

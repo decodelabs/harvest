@@ -199,12 +199,42 @@ class Context implements UriFactory
     public function generator(
         iterable|Closure $iterator,
         int $status = 200,
-        array $headers = []
+        array $headers = [],
     ): StreamResponse {
         return $this->stream(
             new Generator($iterator),
             $status,
-            $headers
+            [
+                'Transfer-Encoding' => 'chunked',
+                'X-Accel-Buffering' => 'no'
+            ] + $headers
+        );
+    }
+
+    /**
+     * Create iteration response
+     *
+     * @param iterable<int|string, string>|Closure(Generator):(iterable<int|string, string>|null) $iterator
+     * @param array<string, string|Stringable|array<string|Stringable>> $headers
+     */
+    public function liveGenerator(
+        iterable|Closure $iterator,
+        int $status = 200,
+        array $headers = []
+    ): StreamResponse {
+        $generator = new Generator($iterator, false);
+
+        // Send whitespace to clear browser buffers
+        $generator->write(str_repeat(' ', 1024) . "\n");
+
+        return $this->stream(
+            $generator,
+            $status,
+            [
+                'Content-Type' => 'text/plain',
+                'Transfer-Encoding' => 'chunked',
+                'X-Accel-Buffering' => 'no'
+            ] + $headers
         );
     }
 
