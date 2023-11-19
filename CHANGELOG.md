@@ -1,3 +1,5 @@
+* Added non-linear stream writer support to Generator responses with Fibers
+
 ## v0.2.6 (2023-11-18)
 * Improved live generator responses
 
