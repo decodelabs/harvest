@@ -14,6 +14,7 @@ use Closure;
 use DecodeLabs\Deliverance\DataReceiver;
 use DecodeLabs\Deliverance\DataReceiverTrait;
 use DecodeLabs\Exceptional;
+use Fiber;
 use Iterator as NativeIterator;
 use IteratorAggregate;
 use Psr\Http\Message\StreamInterface;
@@ -30,6 +31,11 @@ class Generator implements
      * @var NativeIterator<int|string, string>|null
      */
     protected ?NativeIterator $iterator;
+
+    /**
+     * @var Fiber<self,null,iterable<int|string, string>|null,string>|null
+     */
+    protected ?Fiber $fiber = null;
 
     protected string $buffer = '';
     protected int $position = 0;
@@ -50,10 +56,23 @@ class Generator implements
     ) {
         $this->iterator = (function () use ($iterator) {
             if ($iterator instanceof Closure) {
-                $iterator = $iterator($this);
+                $this->fiber = new Fiber($iterator);
 
-                if ($iterator === null) {
-                    $iterator = [];
+                while (!$this->fiber->isTerminated()) {
+                    if ($this->fiber->isSuspended()) {
+                        $string = $this->fiber->resume();
+                    } else {
+                        $string = $this->fiber->start($this);
+                    }
+
+                    yield $string;
+                }
+
+                $iterator = $this->fiber->getReturn();
+                $this->fiber = null;
+
+                if (!is_iterable($iterator)) {
+                    return;
                 }
             }
 
@@ -152,6 +171,11 @@ class Generator implements
             $string = substr($string, 0, $length);
         }
 
+        if ($this->fiber) {
+            Fiber::suspend($string);
+            return strlen($string);
+        }
+
         $this->buffer .= $string;
         return strlen($string);
     }
@@ -168,7 +192,7 @@ class Generator implements
     /**
      * Read from stream
      * If $bufferAll, the iterator is iterated until the buffer can send $length
-     * otherise it's iterated once on each call
+     * otherwise it's iterated once on each call
      */
     public function read(
         int $length
