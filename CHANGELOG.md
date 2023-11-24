@@ -1,3 +1,6 @@
+* Added universal PSR-17 Factory
+* Added Client Request implementation
+
 ## v0.2.7 (2023-11-18)
 * Added non-linear stream writer support to Generator responses with Fibers
 
