@@ -59,13 +59,9 @@ class Generator implements
                 $this->fiber = new Fiber($iterator);
 
                 while (!$this->fiber->isTerminated()) {
-                    if ($this->fiber->isSuspended()) {
-                        $string = $this->fiber->resume();
-                    } else {
-                        $string = $this->fiber->start($this);
-                    }
-
-                    yield $string;
+                    yield $this->fiber->isSuspended()
+                        ? $this->fiber->resume()
+                        : $this->fiber->start($this);
                 }
 
                 $iterator = $this->fiber->getReturn();
