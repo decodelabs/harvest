@@ -33,6 +33,11 @@
         "decodelabs/sanctum": "^0.1.4",
         "decodelabs/phpstan-decodelabs": "^0.6.7"
     },
+    "provide": {
+        "php-http/message-factory-implementation": "1.0",
+        "psr/http-message-implementation": "1.0",
+        "psr/http-factory-implementation": "1.0"
+    },
     "suggest": {
         "decodelabs/sanctum": "Content security policy support"
     },

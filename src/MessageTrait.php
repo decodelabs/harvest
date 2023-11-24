@@ -35,7 +35,7 @@ trait MessageTrait
      * @param array<string, string|Stringable|array<string|Stringable>> $headers
      */
     public function __construct(
-        string|Channel|StreamInterface $body,
+        string|Channel|StreamInterface|null $body,
         array $headers,
         string $protocol = '1.1'
     ) {
@@ -329,11 +329,15 @@ trait MessageTrait
      * Ensure stream object is available
      */
     public static function normalizeBody(
-        string|Channel|StreamInterface $stream,
+        string|Channel|StreamInterface|null $stream,
         string $mode = 'r'
     ): StreamInterface {
         if ($stream instanceof StreamInterface) {
             return $stream;
+        }
+
+        if ($stream === null) {
+            return Stream::createTemp();
         }
 
         return new Stream($stream, $mode);
