@@ -1,3 +1,4 @@
+## v0.2.9 (2023-11-25)
 * Fixed Exception handling for last Middleware
 
 ## v0.2.8 (2023-11-24)
