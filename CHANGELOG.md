@@ -1,3 +1,5 @@
+* Fixed Exception handling for last Middleware
+
 ## v0.2.8 (2023-11-24)
 * Added universal PSR-17 Factory
 * Added Client Request implementation
