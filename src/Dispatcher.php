@@ -117,6 +117,10 @@ class Dispatcher implements
                 array_pop($stack);
                 $pos--;
 
+                if (empty($stack)) {
+                    throw $e;
+                }
+
                 while (!empty($stack)) {
                     [
                         'stage' => $stage,
