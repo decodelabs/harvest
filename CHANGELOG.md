@@ -1,3 +1,6 @@
+## v0.2.10 (2023-11-26)
+* Added parameter support to deferred stages
+
 ## v0.2.9 (2023-11-25)
 * Fixed Exception handling for last Middleware
 

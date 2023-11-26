@@ -192,10 +192,19 @@ class Dispatcher implements
     public function add(
         string|array|Closure|Stage|Middleware ...$middlewares
     ): static {
-        foreach ($middlewares as $middleware) {
+        foreach ($middlewares as $key => $middleware) {
             // Array
             if (is_array($middleware)) {
-                $this->add(...$middleware);
+                if (is_string($key)) {
+                    $this->add(new DeferredStage(
+                        type: $key,
+                        container: $this->container,
+                        parameters: $middleware
+                    ));
+                } else {
+                    $this->add(...$middleware);
+                }
+
                 continue;
             }
 
