@@ -17,6 +17,7 @@
         "decodelabs/exceptional": "^0.4.4",
         "decodelabs/glitch-support": "^0.4.4",
         "decodelabs/singularity": "^0.2.2",
+        "decodelabs/slingshot": "^0.1.1",
         "decodelabs/veneer": "^0.10.19",
 
         "psr/container": "^2.0",

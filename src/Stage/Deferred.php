@@ -10,16 +10,11 @@ declare(strict_types=1);
 namespace DecodeLabs\Harvest\Stage;
 
 use DecodeLabs\Archetype;
-use DecodeLabs\Exceptional;
 use DecodeLabs\Harvest\Stage;
 use DecodeLabs\Harvest\StageTrait;
-use DecodeLabs\Pandora\Container as PandoraContainer;
-
+use DecodeLabs\Slingshot;
 use Psr\Container\ContainerInterface as Container;
 use Psr\Http\Server\MiddlewareInterface as Middleware;
-
-use ReflectionClass;
-use ReflectionParameter;
 
 class Deferred implements Stage
 {
@@ -33,18 +28,26 @@ class Deferred implements Stage
     protected ?Container $container = null;
 
     /**
+     * @var array<string, mixed>|null
+     */
+    protected ?array $parameters = null;
+
+    /**
      * Init with middleware class name
      *
      * @param string|class-string<Middleware> $type
+     * @param array<string, mixed>|null $parameters
      */
     public function __construct(
         string $type,
-        ?Container $container = null
+        ?Container $container = null,
+        ?array $parameters = null
     ) {
         [$type, $priority] = explode(':', $type, 2) + [$type, null];
 
         $this->type = (string)$type;
         $this->container = $container;
+        $this->parameters = $parameters;
 
         if (
             $priority !== null &&
@@ -61,41 +64,11 @@ class Deferred implements Stage
     {
         $class = Archetype::resolve(Middleware::class, $this->type);
 
-        if (
-            $this->container &&
-            (
-                $this->container->has($class) ||
-                $this->container instanceof PandoraContainer
-            )
-        ) {
-            $output = $this->container->get($class);
+        $slingshot = new Slingshot(
+            container: $this->container,
+            parameters: $this->parameters ?? []
+        );
 
-            if (!$output instanceof Middleware) {
-                throw Exceptional::UnexpectedValue(
-                    'Middleware from container as ' . $class . ' is not an instance of ' . Middleware::class
-                );
-            }
-
-            return $output;
-        }
-
-        $params = (new ReflectionClass($class))
-            ->getConstructor()
-            ?->getParameters() ?? [];
-
-        /**
-         * @var ReflectionParameter $param
-         */
-        foreach ($params as $param) {
-            if ($param->isDefaultValueAvailable()) {
-                continue;
-            }
-
-            throw Exceptional::Setup(
-                'Unable to instantiate ' . $class . ' without a container'
-            );
-        }
-
-        return new $class();
+        return $slingshot->newInstance($class);
     }
 }
