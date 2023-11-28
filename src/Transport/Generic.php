@@ -159,7 +159,7 @@ class Generic implements Transport
             $stream->rewind();
         }
 
-        while(ob_get_level() > 0) {
+        while (ob_get_level() > 0) {
             ob_end_clean();
         }
 
