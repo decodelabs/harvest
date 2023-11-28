@@ -1,3 +1,6 @@
+## v0.2.11 (2023-11-28)
+* Improved ob_flush handling in transport
+
 ## v0.2.10 (2023-11-26)
 * Added parameter support to deferred stages
 
