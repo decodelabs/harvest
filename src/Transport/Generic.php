@@ -159,8 +159,11 @@ class Generic implements Transport
             $stream->rewind();
         }
 
+        while(ob_get_level() > 0) {
+            ob_end_clean();
+        }
+
         flush();
-        ob_flush();
         set_time_limit(0);
 
         $isChunked = $this->manualChunk ?
@@ -174,11 +177,9 @@ class Generic implements Transport
                 echo dechex(strlen($chunk)) . "\r\n";
                 echo $chunk . "\r\n";
                 flush();
-                ob_flush();
             } else {
                 echo $chunk;
                 flush();
-                ob_flush();
             }
         }
 
@@ -186,7 +187,6 @@ class Generic implements Transport
         if ($isChunked) {
             echo "0\r\n\r\n";
             flush();
-            ob_flush();
         }
     }
 }
