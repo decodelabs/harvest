@@ -1,3 +1,4 @@
+## v0.2.12 (2023-12-08)
 * Added CORS Middleware
 * Added priority ordering to incoming Middleware
 
