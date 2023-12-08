@@ -11,13 +11,24 @@ namespace DecodeLabs\Harvest\Middleware;
 
 use DecodeLabs\Genesis;
 use DecodeLabs\Harvest;
+use DecodeLabs\Harvest\PriorityProvider;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\MiddlewareInterface as Middleware;
 use Psr\Http\Server\RequestHandlerInterface as Handler;
 
-class Https implements Middleware
+class Https implements
+    Middleware,
+    PriorityProvider
 {
+    /**
+     * Get default priority
+     */
+    public function getPriority(): int
+    {
+        return -1;
+    }
+
     /**
      * Process middleware
      */

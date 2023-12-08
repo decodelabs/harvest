@@ -1,3 +1,6 @@
+* Added CORS Middleware
+* Added priority ordering to incoming Middleware
+
 ## v0.2.11 (2023-11-28)
 * Improved ob_flush handling in transport
 
