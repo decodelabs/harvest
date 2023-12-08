@@ -52,7 +52,23 @@ class Cors implements
         Handler $next
     ): Response {
         $response = $next->handle($request);
+        $response = $this->applyOrigin($request, $response);
 
+        if (!$response->hasHeader('Access-Control-Allow-Headers')) {
+            $response = $response->withHeader(
+                'Access-Control-Allow-Headers',
+                'Content-Type, Authorization, X-Requested-With'
+            );
+        }
+
+        return $response;
+    }
+
+
+    protected function applyOrigin(
+        Request $request,
+        Response $response
+    ): Response {
         // Check header
         if ($response->hasHeader('Access-Control-Allow-Origin')) {
             return $response;

@@ -81,6 +81,17 @@ class ErrorHandler implements
         Throwable $f,
         Request $request
     ): Response {
+        if ($request->getHeaderLine('Accept') === 'application/json') {
+            return Harvest::json([
+                'error' => (string)(
+                    $f instanceof NotFoundException ?
+                        $e : $f
+                ),
+            ], 500, [
+                'Access-Control-Allow-Origin' => '*'
+            ]);
+        }
+
         if (class_exists(Glitch::class)) {
             Glitch::handleException(
                 $f instanceof NotFoundException ?
