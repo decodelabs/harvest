@@ -185,7 +185,7 @@ class Dispatcher implements
     /**
      * Add middleware to stack
      *
-     * @param string|class-string<Middleware>|Middleware|Stage|Closure(Request, Handler):Response|array<string|class-string<Middleware>|Middleware|Closure(Request, Handler):Response> ...$middlewares
+     * @param string|class-string<Middleware>|Middleware|Stage|Closure(Request, Handler):Response|array<mixed> ...$middlewares
      *
      * @return $this
      */
@@ -199,9 +199,11 @@ class Dispatcher implements
                     $this->add(new DeferredStage(
                         type: $key,
                         container: $this->container,
+                        /** @var array<string, mixed> $middleware  */
                         parameters: $middleware
                     ));
                 } else {
+                    /** @var array<int,string|class-string<Middleware>|Middleware|Stage|Closure(Request, Handler):Response>|array<string,array<mixed>> $middleware */
                     $this->add(...$middleware);
                 }
 
