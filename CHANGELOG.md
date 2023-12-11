@@ -1,3 +1,4 @@
+* Added message body getter helpers
 * Improved JSON error handling
 
 ## v0.2.13 (2023-12-08)

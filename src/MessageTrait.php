@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace DecodeLabs\Harvest;
 
+use DecodeLabs\Collections\Tree;
+use DecodeLabs\Collections\Tree\NativeMutable as NativeMutableTree;
 use DecodeLabs\Deliverance\Channel\Stream as Channel;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Harvest\Message\Stream;
@@ -322,6 +324,60 @@ trait MessageTrait
     public function getBody(): StreamInterface
     {
         return $this->body;
+    }
+
+    /**
+     * Get body string
+     */
+    public function getBodyString(): string
+    {
+        return $this->body->getContents();
+    }
+
+    /**
+     * Get body JSON
+     *
+     * @return Tree<mixed>
+     */
+    public function getJson(): Tree
+    {
+        if (
+            $this->hasHeader('Content-Type') &&
+            !preg_match('/^application\/json\b/i', $this->getHeaderLine('Content-Type'))
+        ) {
+            throw Exceptional::UnexpectedValue(
+                'Body is not JSON'
+            );
+        }
+
+        $output = json_decode($this->getBodyString(), true);
+
+        if (is_iterable($output)) {
+            $output = new NativeMutableTree($output);
+        } else {
+            $output = new NativeMutableTree(null, $output);
+        }
+
+        return $output;
+    }
+
+    /**
+     * Get form data
+     *
+     * @return Tree<string|bool>
+     */
+    public function getFormData(): Tree
+    {
+        if (
+            $this->hasHeader('Content-Type') &&
+            !preg_match('/^application\/x-www-form-urlencoded\b/i', $this->getHeaderLine('Content-Type'))
+        ) {
+            throw Exceptional::UnexpectedValue(
+                'Body is not form data'
+            );
+        }
+
+        return NativeMutableTree::fromDelimitedString($this->getBodyString());
     }
 
 
