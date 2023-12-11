@@ -1,3 +1,5 @@
+* Improved JSON error handling
+
 ## v0.2.13 (2023-12-08)
 * Added allowed headers to CORS Middleware
 * Added JSON error response in ErrorHandler Middleware
