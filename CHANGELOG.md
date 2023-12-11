@@ -1,3 +1,6 @@
+## v0.2.15 (2023-12-11)
+* Fixed Dispatcher add() signature
+
 ## v0.2.14 (2023-12-11)
 * Added message body getter helpers
 * Improved JSON error handling
