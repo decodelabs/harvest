@@ -82,12 +82,20 @@ class ErrorHandler implements
         Request $request
     ): Response {
         if ($request->getHeaderLine('Accept') === 'application/json') {
+            $error = $f instanceof NotFoundException ? $e : $f;
+
+            if ($error instanceof Exceptional\Exception) {
+                $code = $error->getHttpStatus() ?? 500;
+                $data = $error->getData();
+            } else {
+                $code = 500;
+                $data = null;
+            }
+
             return Harvest::json([
-                'error' => (string)(
-                    $f instanceof NotFoundException ?
-                        $e : $f
-                ),
-            ], 500, [
+                'error' => (string)$error,
+                'data' => $data
+            ], $code, [
                 'Access-Control-Allow-Origin' => '*'
             ]);
         }
