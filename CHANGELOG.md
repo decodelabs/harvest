@@ -1,3 +1,5 @@
+* Added dev OverrideMethod middleware
+
 ## v0.2.15 (2023-12-11)
 * Fixed Dispatcher add() signature
 
