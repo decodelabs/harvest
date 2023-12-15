@@ -217,11 +217,11 @@ trait MessageTrait
     /**
      * Prepare a header value
      *
-     * @param string|Stringable|array<string|Stringable> $value
+     * @param string|Stringable|int|float|array<string|Stringable|int|float> $value
      * @return array<string>
      */
     public static function normalizeHeader(
-        string|Stringable|array $value
+        string|Stringable|int|float|array $value
     ): array {
         if (!is_array($value)) {
             $value = [$value];

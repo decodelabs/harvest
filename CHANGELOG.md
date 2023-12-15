@@ -1,3 +1,5 @@
+* Allow number types in headers
+
 ## v0.2.16 (2023-12-12)
 * Added dev OverrideMethod middleware
 
