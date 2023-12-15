@@ -1,3 +1,4 @@
+## v0.2.17 (2023-12-15)
 * Allow number types in headers
 
 ## v0.2.16 (2023-12-12)
