@@ -279,9 +279,9 @@ class Context implements UriFactory
 
 // Register interfaces
 /** @phpstan-ignore-next-line */
-Archetype::extend(Middleware::class, MiddlewareNamespace::class);
+Archetype::map(Middleware::class, MiddlewareNamespace::class);
 /** @phpstan-ignore-next-line */
-Archetype::extend(Response::class, ResponseNamespace::class);
+Archetype::map(Response::class, ResponseNamespace::class);
 
 // Register Veneer
 Veneer::register(Context::class, Harvest::class);
