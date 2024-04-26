@@ -63,7 +63,7 @@ String names passed to the Dispatcher will resolve via the optional PSR Containe
 use DecodeLabs\Archetype;
 use DecodeLabs\Harvest\Middleware;
 
-Archetype::extend(Middleware::class, MyMiddlewareNamespace::class);
+Archetype::map(Middleware::class, MyMiddlewareNamespace::class);
 ```
 
 ### Fibers
