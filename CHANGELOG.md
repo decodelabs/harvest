@@ -1,3 +1,4 @@
+## v0.2.19 (2024-04-26)
 * Aliased Psr types in Archetype
 
 ## v0.2.18 (2024-04-26)
