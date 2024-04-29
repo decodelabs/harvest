@@ -1,3 +1,6 @@
+## v0.2.20 (2024-04-29)
+* Fixed Veneer stubs in gitattributes
+
 ## v0.2.19 (2024-04-26)
 * Aliased Psr types in Archetype
 
