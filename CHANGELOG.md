@@ -1,3 +1,6 @@
+## v0.2.21 (2024-05-07)
+* Simplified JSON response format options
+
 ## v0.2.20 (2024-04-29)
 * Fixed Veneer stubs in gitattributes
 
