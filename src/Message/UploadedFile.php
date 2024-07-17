@@ -147,6 +147,7 @@ class UploadedFile implements UploadedFileInterface
         $sapi = PHP_SAPI;
 
         if (
+            // @phpstan-ignore-next-line
             empty($sapi) ||
             0 === strpos($sapi, 'cli') ||
             !$this->file
