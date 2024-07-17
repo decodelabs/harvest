@@ -1,3 +1,5 @@
+* Updated Veneer dependency
+
 ## v0.2.21 (2024-05-07)
 * Simplified JSON response format options
 
