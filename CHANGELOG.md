@@ -1,3 +1,5 @@
+* Removed unneeded LazyLoad binding attribute
+
 ## v0.2.22 (2024-07-17)
 * Updated Veneer dependency
 
