@@ -29,7 +29,6 @@ use DecodeLabs\Harvest\Response\Xml as XmlResponse;
 use DecodeLabs\Singularity;
 use DecodeLabs\Singularity\Url;
 use DecodeLabs\Veneer;
-use DecodeLabs\Veneer\LazyLoad;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as ServerRequest;
 use Psr\Http\Message\StreamInterface as StreamInterface;
@@ -39,7 +38,6 @@ use Psr\Http\Server\MiddlewareInterface as Middleware;
 use Stringable;
 use Throwable;
 
-#[LazyLoad]
 class Context implements UriFactory
 {
     /**
