@@ -20,7 +20,7 @@
         "decodelabs/glitch-support": "^0.4.4",
         "decodelabs/singularity": "^0.2.2",
         "decodelabs/slingshot": "^0.1.1",
-        "decodelabs/veneer": "^0.11.2",
+        "decodelabs/veneer": "^0.11.6",
 
         "psr/container": "^2.0",
         "psr/http-factory": "^1.0",
