@@ -21,17 +21,16 @@ use DecodeLabs\Harvest\Response\Json as Ref9;
 use DecodeLabs\Harvest\Response\Xml as Ref10;
 use Psr\Http\Message\UriInterface as Ref11;
 use DecodeLabs\Harvest\Response\Redirect as Ref12;
-use Traversable as Ref13;
-use Closure as Ref14;
-use Psr\Http\Message\ServerRequestInterface as Ref15;
-use DecodeLabs\Compass\Ip as Ref16;
+use Closure as Ref13;
+use Psr\Http\Message\ServerRequestInterface as Ref14;
+use DecodeLabs\Compass\Ip as Ref15;
 
 class Harvest implements Proxy
 {
     use ProxyTrait;
 
-    const VENEER = 'DecodeLabs\\Harvest';
-    const VENEER_TARGET = Inst::class;
+    const Veneer = 'DecodeLabs\\Harvest';
+    const VeneerTarget = Inst::class;
 
     public static Inst $instance;
 
@@ -71,13 +70,13 @@ class Harvest implements Proxy
     public static function redirect(Ref11|string $uri, int $status = 302, array $headers = []): Ref12 {
         return static::$instance->redirect(...func_get_args());
     }
-    public static function generator(Ref13|Ref14|array $iterator, int $status = 200, array $headers = []): Ref6 {
+    public static function generator(Ref13|iterable $iterator, int $status = 200, array $headers = []): Ref6 {
         return static::$instance->generator(...func_get_args());
     }
-    public static function liveGenerator(Ref13|Ref14|array $iterator, int $status = 200, array $headers = []): Ref6 {
+    public static function liveGenerator(Ref13|iterable $iterator, int $status = 200, array $headers = []): Ref6 {
         return static::$instance->liveGenerator(...func_get_args());
     }
-    public static function extractIpFromRequest(Ref15 $request): Ref16 {
+    public static function extractIpFromRequest(Ref14 $request): Ref15 {
         return static::$instance->extractIpFromRequest(...func_get_args());
     }
 };
