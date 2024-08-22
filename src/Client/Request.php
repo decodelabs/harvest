@@ -25,7 +25,7 @@ class Request implements RequestInterface
         MessageTrait::__construct as protected __messageConstruct;
     }
 
-    public const METHODS = [
+    public const Methods = [
         'OPTIONS', 'GET', 'HEAD', 'POST', 'PUT',
         'DELETE', 'PATCH', 'TRACE', 'CONNECT'
     ];
@@ -121,7 +121,7 @@ class Request implements RequestInterface
     public static function isValidMethod(
         ?string $method
     ): bool {
-        return in_array($method, static::METHODS);
+        return in_array($method, static::Methods);
     }
 
     /**
@@ -131,7 +131,7 @@ class Request implements RequestInterface
      */
     public static function getValidMethods(): array
     {
-        return static::METHODS;
+        return static::Methods;
     }
 
 

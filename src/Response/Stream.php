@@ -22,7 +22,7 @@ class Stream implements Response
         MessageTrait::__construct as protected __messageConstruct;
     }
 
-    public const CODES = [
+    protected const Codes = [
         // Info code
         100 => 'Continue',
         101 => 'Switching Protocols',
@@ -151,7 +151,7 @@ class Stream implements Response
      */
     public function getReasonPhrase(): string
     {
-        return $this->phrase ?? static::CODES[$this->status];
+        return $this->phrase ?? static::Codes[$this->status];
     }
 
 
@@ -161,7 +161,7 @@ class Stream implements Response
     public static function normalizeStatusCode(
         int $code
     ): int {
-        if (!isset(static::CODES[$code])) {
+        if (!isset(static::Codes[$code])) {
             throw Exceptional::InvalidArgument(
                 'Invalid HTTP status code: ' . $code
             );

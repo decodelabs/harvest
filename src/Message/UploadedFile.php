@@ -17,7 +17,7 @@ use Psr\Http\Message\UploadedFileInterface;
 
 class UploadedFile implements UploadedFileInterface
 {
-    public const ERRORS = [
+    protected const Errors = [
         UPLOAD_ERR_OK => 'The file uploaded successfully',
         UPLOAD_ERR_INI_SIZE => 'The uploaded file exceeds the upload_max_filesize directive',
         UPLOAD_ERR_FORM_SIZE => 'The uploaded file exceeds the MAX_FILE_SIZE directive',
@@ -63,7 +63,7 @@ class UploadedFile implements UploadedFileInterface
 
         $this->size = $size;
 
-        if (!isset(static::ERRORS[$error])) {
+        if (!isset(static::Errors[$error])) {
             throw Exceptional::InvalidArgument(
                 'Invalid uploaded file status: ' . $error
             );
@@ -123,7 +123,7 @@ class UploadedFile implements UploadedFileInterface
 
         if ($this->error !== UPLOAD_ERR_OK) {
             throw Exceptional::Runtime(
-                'Cannot move file: ' . static::ERRORS[$this->error]
+                'Cannot move file: ' . static::Errors[$this->error]
             );
         }
 
@@ -193,7 +193,7 @@ class UploadedFile implements UploadedFileInterface
     {
         if ($this->error !== UPLOAD_ERR_OK) {
             throw Exceptional::Runtime(
-                'Stream not available: ' . static::ERRORS[$this->error]
+                'Stream not available: ' . static::Errors[$this->error]
             );
         }
 

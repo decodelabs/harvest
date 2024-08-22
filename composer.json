@@ -13,8 +13,8 @@
 
         "decodelabs/archetype": "^0.3",
         "decodelabs/coercion": "^0.2.7",
-        "decodelabs/collections": "^0.8.8",
-        "decodelabs/compass": "^0.1.5",
+        "decodelabs/collections": "^0.9",
+        "decodelabs/compass": "^0.2",
         "decodelabs/deliverance": "^0.2.11",
         "decodelabs/exceptional": "^0.4.4",
         "decodelabs/glitch-support": "^0.4.4",
@@ -29,10 +29,10 @@
         "psr/http-server-middleware": "^1.0"
     },
     "require-dev": {
-        "decodelabs/atlas": "^0.11.0",
-        "decodelabs/genesis": "^0.8.3",
+        "decodelabs/atlas": "^0.12",
+        "decodelabs/genesis": "^0.9",
         "decodelabs/pandora": "^0.2.11",
-        "decodelabs/sanctum": "^0.1.4",
+        "decodelabs/sanctum": "^0.2",
         "decodelabs/phpstan-decodelabs": "^0.6.7"
     },
     "provide": {
@@ -53,7 +53,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-develop": "0.2.x-dev"
+            "dev-develop": "0.3.x-dev"
         }
     }
 }

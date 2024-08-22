@@ -16,7 +16,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class Generic implements Transport
 {
-    public const MERGE_HEADERS = [
+    protected const MergeHeaders = [
         'Set-Cookie'
     ];
 
@@ -100,7 +100,7 @@ class Generic implements Transport
             $name = str_replace('-', ' ', $header);
             $name = ucwords($name);
             $name = str_replace(' ', '-', $name);
-            $replace = !in_array($name, static::MERGE_HEADERS);
+            $replace = !in_array($name, static::MergeHeaders);
 
             if ($name === $this->sendfile) {
                 $sendData = false;
