@@ -238,7 +238,7 @@ class Stream implements StreamInterface
             );
         }
 
-        /** @var int<0, max> $length */
+        /** @var int<1, max> $length */
         return (string)$this->channel->read($length);
     }
 
