@@ -1,3 +1,4 @@
+* Fixed Glitch Exception logging via Proxy
 * Added @phpstan-require-implements constraints
 
 ## v0.3.0 (2024-08-21)

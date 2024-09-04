@@ -53,7 +53,7 @@ class ErrorHandler implements
         Request $request,
         Handler $next
     ): Response {
-        Glitch::logException($e);
+        GlitchProxy::logException($e);
 
         try {
             if ($e instanceof Exceptional\Exception) {
