@@ -1,3 +1,5 @@
+## v0.3.1 (2025-02-07)
+* Fixed implicit nullable arguments
 * Fixed Glitch Exception logging via Proxy
 * Added @phpstan-require-implements constraints
 
