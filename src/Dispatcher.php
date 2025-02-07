@@ -70,10 +70,10 @@ class Dispatcher implements
             Request $request,
             Handler $handler
         ) {
-            throw Exceptional::NotFound([
-                'message' => 'No middleware could handle the current request',
-                'http' => 404
-            ]);
+            throw Exceptional::NotFound(
+                message: 'No middleware could handle the current request',
+                http: 404
+            );
         });
 
         $stack = [];
@@ -146,10 +146,10 @@ class Dispatcher implements
                 $shift = 1;
 
                 if (!isset($stages[$pos + $shift])) {
-                    throw Exceptional::NotFound([
-                        'message' => 'No middleware could handle the current request',
-                        'http' => 404
-                    ]);
+                    throw Exceptional::NotFound(
+                        message: 'No middleware could handle the current request',
+                        http: 404
+                    );
                 }
 
                 continue;
