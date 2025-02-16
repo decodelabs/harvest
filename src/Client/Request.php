@@ -25,21 +25,24 @@ class Request implements RequestInterface
         MessageTrait::__construct as protected __messageConstruct;
     }
 
-    public const Methods = [
+    /**
+     * @var list<string>
+     */
+    public const array Methods = [
         'OPTIONS', 'GET', 'HEAD', 'POST', 'PUT',
         'DELETE', 'PATCH', 'TRACE', 'CONNECT'
     ];
 
 
-    protected string $method = 'GET';
+    protected(set) string $method = 'GET';
     protected ?string $target = null;
-    protected Url $uri;
+    protected(set) Url $uri;
 
 
     /**
      * Init with global data
      *
-     * @param array<string, string|Stringable|array<string|Stringable>> $headers
+     * @param array<string,string|Stringable|array<string|Stringable>> $headers
      */
     public function __construct(
         string $method,
@@ -59,7 +62,7 @@ class Request implements RequestInterface
 
         if (!$this->isValidMethod($method)) {
             throw Exceptional::InvalidArgument(
-                'Invalid HTTP method: ' . $method
+                message: 'Invalid HTTP method: ' . $method
             );
         }
 
@@ -97,7 +100,7 @@ class Request implements RequestInterface
 
         if (!$this->isValidMethod($method)) {
             throw Exceptional::InvalidArgument(
-                'Invalid HTTP method: ' . $method
+                message: 'Invalid HTTP method: ' . $method
             );
         }
 
@@ -144,7 +147,7 @@ class Request implements RequestInterface
     ): static {
         if (preg_match('/\s/', $target)) {
             throw Exceptional::InvalidArgument(
-                'Request target must not contain spaces'
+                message: 'Request target must not contain spaces'
             );
         }
 

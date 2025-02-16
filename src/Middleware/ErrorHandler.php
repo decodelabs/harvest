@@ -57,7 +57,7 @@ class ErrorHandler implements
 
         try {
             if ($e instanceof Exceptional\Exception) {
-                $code = $e->getHttpStatus();
+                $code = $e->http ?? 500;
             } else {
                 $code = 500;
             }
@@ -85,8 +85,8 @@ class ErrorHandler implements
             $error = $f instanceof NotFoundException ? $e : $f;
 
             if ($error instanceof Exceptional\Exception) {
-                $code = $error->getHttpStatus() ?? 500;
-                $data = $error->getData();
+                $code = $error->http ?? 500;
+                $data = $error->data;
             } else {
                 $code = 500;
                 $data = null;

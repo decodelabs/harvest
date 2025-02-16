@@ -12,6 +12,7 @@ namespace DecodeLabs\Harvest;
 use Closure;
 use DecodeLabs\Archetype;
 use DecodeLabs\Atlas\File;
+use DecodeLabs\Coercion;
 use DecodeLabs\Compass\Ip;
 use DecodeLabs\Deliverance\Channel\Stream as Channel;
 use DecodeLabs\Harvest;
@@ -248,15 +249,15 @@ class Context implements UriFactory
         $server = $request->getServerParams();
 
         if (isset($server['HTTP_X_FORWARDED_FOR'])) {
-            $ips .= $server['HTTP_X_FORWARDED_FOR'] . ',';
+            $ips .= Coercion::toString($server['HTTP_X_FORWARDED_FOR']) . ',';
         }
 
         if (isset($server['REMOTE_ADDR'])) {
-            $ips .= $server['REMOTE_ADDR'] . ',';
+            $ips .= Coercion::toString($server['REMOTE_ADDR']) . ',';
         }
 
         if (isset($server['HTTP_CLIENT_IP'])) {
-            $ips .= $server['HTTP_CLIENT_IP'] . ',';
+            $ips .= Coercion::toString($server['HTTP_CLIENT_IP']) . ',';
         }
 
         $parts = explode(',', rtrim($ips, ','));
@@ -276,10 +277,19 @@ class Context implements UriFactory
 
 
 // Register interfaces
-/** @phpstan-ignore-next-line */
-Archetype::alias(Middleware::class, MiddlewareNamespace::class);
-/** @phpstan-ignore-next-line */
-Archetype::alias(Response::class, ResponseNamespace::class);
+Archetype::alias(
+    Middleware::class,
+    /** @phpstan-ignore-next-line */
+    MiddlewareNamespace::class
+);
+
+Archetype::alias(
+    Response::class,
+    ResponseNamespace::class
+);
 
 // Register Veneer
-Veneer::register(Context::class, Harvest::class);
+Veneer\Manager::getGlobalManager()->register(
+    Context::class,
+    Harvest::class
+);

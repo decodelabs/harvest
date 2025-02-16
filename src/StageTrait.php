@@ -20,42 +20,21 @@ use Psr\Http\Server\MiddlewareInterface as Middleware;
  */
 trait StageTrait
 {
-    protected ?int $priority = null;
-
-    /**
-     * Set prioerty
-     *
-     * @return $this
-     */
-    public function setPriority(
-        ?int $priority
-    ): static {
-        $this->priority = $priority;
-        return $this;
+    public int $priority {
+        get => $this->priority ??= $this->defaultPriority;
     }
 
-    /**
-     * Get priority
-     */
-    public function getPriority(): int
-    {
-        return $this->priority ?? $this->getDefaultPriority();
-    }
+    public int $defaultPriority {
+        get {
+            $middleware = $this->middleware;
 
-    /**
-     * Get default priority
-     */
-    public function getDefaultPriority(): int
-    {
-        $middleware = $this->getMiddleware();
+            if (!$middleware instanceof PriorityProvider) {
+                return 0;
+            }
 
-        if (!$middleware instanceof PriorityProvider) {
-            return 0;
+            return $middleware->getPriority();
         }
-
-        return $middleware->getPriority();
     }
-
 
     /**
      * Fiber interchange
@@ -67,7 +46,7 @@ trait StageTrait
 
         if (!$response instanceof Response) {
             throw Exceptional::UnexpectedValue(
-                'Middleware did not return a response'
+                message: 'Middleware did not return a response'
             );
         }
 
@@ -80,6 +59,6 @@ trait StageTrait
     public function run(
         Request $request
     ): Response {
-        return $this->getMiddleware()->process($request, $this);
+        return $this->middleware->process($request, $this);
     }
 }

@@ -77,10 +77,6 @@ class Generator implements
                 $iterator = new ArrayIterator($iterator);
             }
 
-            if (!$iterator instanceof Traversable) {
-                $iterator = new ArrayIterator([...$iterator]);
-            }
-
             if ($iterator instanceof IteratorAggregate) {
                 $iterator = $iterator->getIterator();
             }
@@ -131,7 +127,7 @@ class Generator implements
         int $whence = SEEK_SET
     ): void {
         throw Exceptional::Runtime(
-            'Iterators cannot seek'
+            message: 'Iterators cannot seek'
         );
     }
 
@@ -141,7 +137,7 @@ class Generator implements
     public function rewind(): void
     {
         throw Exceptional::Runtime(
-            'Iterators cannot seek'
+            message: 'Iterators cannot seek'
         );
     }
 
@@ -196,13 +192,13 @@ class Generator implements
     ): string {
         if ($this->iterator === null) {
             throw Exceptional::Runtime(
-                'Cannot read from stream, resource has been detached'
+                message: 'Cannot read from stream, resource has been detached'
             );
         }
 
         if ($this->eof) {
             throw Exceptional::Runtime(
-                'Cannot read from stream, iterator has completed'
+                message: 'Cannot read from stream, iterator has completed'
             );
         }
 
@@ -254,13 +250,13 @@ class Generator implements
     {
         if ($this->iterator === null) {
             throw Exceptional::Runtime(
-                'Cannot read from stream, resource has been detached'
+                message: 'Cannot read from stream, resource has been detached'
             );
         }
 
         if ($this->eof) {
             throw Exceptional::Runtime(
-                'Cannot read from stream, iterator has completed'
+                message: 'Cannot read from stream, iterator has completed'
             );
         }
 

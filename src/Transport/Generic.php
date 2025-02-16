@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace DecodeLabs\Harvest\Transport;
 
+use DecodeLabs\Coercion;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Harvest\Transport;
 use Psr\Http\Message\ResponseInterface;
@@ -16,7 +17,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class Generic implements Transport
 {
-    protected const MergeHeaders = [
+    protected const array MergeHeaders = [
         'Set-Cookie'
     ];
 
@@ -74,7 +75,7 @@ class Generic implements Transport
     ): void {
         if (headers_sent()) {
             throw Exceptional::Runtime(
-                'Cannot send response, headers already sent'
+                message: 'Cannot send response, headers already sent'
             );
         }
 
@@ -95,7 +96,11 @@ class Generic implements Transport
 
 
 
-        // Send headers
+        /**
+         * Send headers
+         * @var string $header
+         * @var array<string> $values
+         */
         foreach ($response->getHeaders() as $header => $values) {
             $name = str_replace('-', ' ', $header);
             $name = ucwords($name);
@@ -118,7 +123,7 @@ class Generic implements Transport
             isset($_SERVER['HTTP_X_SENDFILE_TYPE']) &&
             $_SERVER['HTTP_X_SENDFILE_TYPE'] !== 'X-Accel-Redirect'
         ) {
-            $this->sendfile = $_SERVER['HTTP_X_SENDFILE_TYPE'];
+            $this->sendfile = Coercion::toString($_SERVER['HTTP_X_SENDFILE_TYPE']);
         }
 
         if (
@@ -127,7 +132,7 @@ class Generic implements Transport
             $stream->getMetadata('wrapper_type') === 'plainfile' &&
             ($filePath = $stream->getMetadata('uri'))
         ) {
-            header($this->sendfile . ': ' . $filePath, true, $status);
+            header($this->sendfile . ': ' . Coercion::toString($filePath), true, $status);
             $sendData = false;
         }
 

@@ -17,7 +17,10 @@ use Psr\Http\Message\UploadedFileInterface;
 
 class UploadedFile implements UploadedFileInterface
 {
-    protected const Errors = [
+    /**
+     * @var array<int,string>
+     */
+    protected const array Errors = [
         UPLOAD_ERR_OK => 'The file uploaded successfully',
         UPLOAD_ERR_INI_SIZE => 'The uploaded file exceeds the upload_max_filesize directive',
         UPLOAD_ERR_FORM_SIZE => 'The uploaded file exceeds the MAX_FILE_SIZE directive',
@@ -65,7 +68,7 @@ class UploadedFile implements UploadedFileInterface
 
         if (!isset(static::Errors[$error])) {
             throw Exceptional::InvalidArgument(
-                'Invalid uploaded file status: ' . $error
+                message: 'Invalid uploaded file status: ' . $error
             );
         }
 
@@ -117,19 +120,19 @@ class UploadedFile implements UploadedFileInterface
     ): void {
         if ($this->moved) {
             throw Exceptional::Runtime(
-                'File has already been moved'
+                message: 'File has already been moved'
             );
         }
 
         if ($this->error !== UPLOAD_ERR_OK) {
             throw Exceptional::Runtime(
-                'Cannot move file: ' . static::Errors[$this->error]
+                message: 'Cannot move file: ' . static::Errors[$this->error]
             );
         }
 
         if (empty($targetPath = (string)$targetPath)) {
             throw Exceptional::InvalidArgument(
-                'Invalid upload file target path'
+                message: 'Invalid upload file target path'
             );
         }
 
@@ -140,7 +143,7 @@ class UploadedFile implements UploadedFileInterface
             !is_writable($targetDir)
         ) {
             throw Exceptional::Runtime(
-                'Target directory doesn\'t exist: ' . $targetDir
+                message: 'Target directory doesn\'t exist: ' . $targetDir
             );
         }
 
@@ -155,7 +158,7 @@ class UploadedFile implements UploadedFileInterface
             $this->writeFile($targetPath);
         } elseif (false === move_uploaded_file($this->file, $targetPath)) {
             throw Exceptional::Runtime(
-                'Moving uploaded file failed'
+                message: 'Moving uploaded file failed'
             );
         }
 
@@ -171,7 +174,7 @@ class UploadedFile implements UploadedFileInterface
     ): void {
         if (false === ($fp = fopen($targetPath, 'wb+'))) {
             throw Exceptional::Runtime(
-                'Target path is not writable'
+                message: 'Target path is not writable'
             );
         }
 
@@ -193,13 +196,13 @@ class UploadedFile implements UploadedFileInterface
     {
         if ($this->error !== UPLOAD_ERR_OK) {
             throw Exceptional::Runtime(
-                'Stream not available: ' . static::Errors[$this->error]
+                message: 'Stream not available: ' . static::Errors[$this->error]
             );
         }
 
         if ($this->moved) {
             throw Exceptional::Runtime(
-                'Stream not available, file has already been moved'
+                message: 'Stream not available, file has already been moved'
             );
         }
 
@@ -209,7 +212,7 @@ class UploadedFile implements UploadedFileInterface
 
         if ($this->file === null) {
             throw Exceptional::Runtime(
-                'Stream not available, file not locatable'
+                message: 'Stream not available, file not locatable'
             );
         }
 
