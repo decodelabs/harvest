@@ -120,13 +120,13 @@ class Stream implements StreamInterface
     {
         if (null === ($resource = $this->getResource())) {
             throw Exceptional::Io(
-                'Cannot tell stream position, resource has been detached'
+                message: 'Cannot tell stream position, resource has been detached'
             );
         }
 
         if (false === ($output = ftell($resource))) {
             throw Exceptional::Io(
-                'Unable to tell stream position'
+                message: 'Unable to tell stream position'
             );
         }
 
@@ -169,7 +169,7 @@ class Stream implements StreamInterface
             null === ($resource = $this->getResource())
         ) {
             throw Exceptional::Io(
-                'Stream is not seekable'
+                message: 'Stream is not seekable'
             );
         }
 
@@ -177,7 +177,7 @@ class Stream implements StreamInterface
 
         if ($result !== 0) {
             throw Exceptional::Io(
-                'Stream seeking failed'
+                message: 'Stream seeking failed'
             );
         }
     }
@@ -209,7 +209,7 @@ class Stream implements StreamInterface
     ): int {
         if (!$this->channel) {
             throw Exceptional::Io(
-                'Stream is not writable'
+                message: 'Stream is not writable'
             );
         }
 
@@ -234,7 +234,7 @@ class Stream implements StreamInterface
     ): string {
         if (!$this->channel) {
             throw Exceptional::Io(
-                'Stream is not readable'
+                message: 'Stream is not readable'
             );
         }
 
@@ -254,7 +254,7 @@ class Stream implements StreamInterface
             null === ($resource = $this->getResource())
         ) {
             throw Exceptional::Io(
-                'Stream is not readable'
+                message: 'Stream is not readable'
             );
         }
 
@@ -262,7 +262,7 @@ class Stream implements StreamInterface
 
         if ($output === false) {
             throw Exceptional::Io(
-                'Reading from stream failed'
+                message: 'Reading from stream failed'
             );
         }
 
@@ -280,7 +280,7 @@ class Stream implements StreamInterface
     ): mixed {
         if (null === ($resource = $this->getResource())) {
             throw Exceptional::Io(
-                'Cannot get stream metadata, resource has been detached'
+                message: 'Cannot get stream metadata, resource has been detached'
             );
         }
 

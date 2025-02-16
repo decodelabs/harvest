@@ -33,9 +33,8 @@ class Json extends Stream
 
         if ($json === false) {
             throw Exceptional::UnexpectedValue(
-                'Unable to encode json for stream',
-                null,
-                $data
+                message: 'Unable to encode json for stream',
+                data: $data
             );
         }
 

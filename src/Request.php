@@ -23,34 +23,34 @@ use Stringable;
 class Request extends ClientRequest implements ServerRequestInterface
 {
     /**
-     * @var array<string, string|array<string, mixed>>|null
+     * @var array<string,string|array<string, mixed>>|null
      */
-    protected ?array $query = null;
+    protected(set) ?array $query = null;
 
     /**
-     * @var array<string, mixed>
+     * @var array<string,mixed>
      */
-    protected array $attributes = [];
+    protected(set) array $attributes = [];
 
     /**
-     * @var array<string, string>
+     * @var array<string,string>
      */
-    protected array $cookies = [];
+    protected(set) array $cookies = [];
 
     /**
-     * @var array<string, UploadedFileInterface|array<string, UploadedFileInterface>>
+     * @var array<string,UploadedFileInterface|array<string,UploadedFileInterface>>
      */
-    protected array $files = [];
+    protected(set) array $files = [];
 
     /**
-     * @var array<string, mixed>
+     * @var array<string,mixed>
      */
-    protected array $server = [];
+    protected(set) array $server = [];
 
     /**
      * @var array<mixed>|object|null
      */
-    protected mixed $parsedBody = null;
+    protected(set) mixed $parsedBody = null;
 
 
     /**
@@ -199,8 +199,8 @@ class Request extends ClientRequest implements ServerRequestInterface
     /**
      * Prepare file array
      *
-     * @param array<string, UploadedFileInterface|array<string, UploadedFileInterface>> $files
-     * @return array<string, UploadedFileInterface|array<string, UploadedFileInterface>>
+     * @param array<string,UploadedFileInterface|array<string,UploadedFileInterface>> $files
+     * @return array<string,UploadedFileInterface|array<string,UploadedFileInterface>>
      */
     public static function normalizeUploadedFiles(
         array $files
@@ -211,9 +211,10 @@ class Request extends ClientRequest implements ServerRequestInterface
                 continue;
             }
 
+            // @phpstan-ignore-next-line
             if (!$file instanceof UploadedFileInterface) {
                 throw Exceptional::InvalidArgument(
-                    'Invalid uploaded file array - files must be instances of UploadedFileInterface'
+                    message: 'Invalid uploaded file array - files must be instances of UploadedFileInterface'
                 );
             }
         }

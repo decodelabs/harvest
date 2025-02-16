@@ -22,7 +22,10 @@ class Stream implements Response
         MessageTrait::__construct as protected __messageConstruct;
     }
 
-    protected const Codes = [
+    /**
+     * @var array<int,string>
+     */
+    protected const array Codes = [
         // Info code
         100 => 'Continue',
         101 => 'Switching Protocols',
@@ -163,7 +166,7 @@ class Stream implements Response
     ): int {
         if (!isset(static::Codes[$code])) {
             throw Exceptional::InvalidArgument(
-                'Invalid HTTP status code: ' . $code
+                message: 'Invalid HTTP status code: ' . $code
             );
         }
 

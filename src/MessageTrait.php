@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace DecodeLabs\Harvest;
 
 use DecodeLabs\Collections\Tree;
-use DecodeLabs\Collections\Tree\NativeMutable as NativeMutableTree;
 use DecodeLabs\Deliverance\Channel\Stream as Channel;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Harvest\Message\Stream;
@@ -19,19 +18,19 @@ use Stringable;
 
 trait MessageTrait
 {
-    protected string $protocol = '1.1';
+    protected(set) string $protocol = '1.1';
 
     /**
      * @var array<string, array<string>>
      */
-    protected array $headers = [];
+    protected(set) array $headers = [];
 
     /**
      * @var array<string, string>
      */
-    protected array $headerAliases = [];
+    protected(set) array $headerAliases = [];
 
-    protected StreamInterface $body;
+    protected(set) StreamInterface $body;
 
     /**
      * @param array<string, string|Stringable|array<string|Stringable>> $headers
@@ -49,7 +48,7 @@ trait MessageTrait
         foreach ($headers as $name => $value) {
             if (!$this->isHeaderNameValid($name)) {
                 throw Exceptional::InvalidArgument(
-                    'Invalid header name: ' . $name
+                    message: 'Invalid header name: ' . $name
                 );
             }
 
@@ -93,9 +92,8 @@ trait MessageTrait
 
         if (!preg_match('#^(1\.[01]|2)$#', (string)$version)) {
             throw Exceptional::InvalidArgument(
-                'Invalid HTTP protocol version: ' . $version,
-                null,
-                $version
+                message: 'Invalid HTTP protocol version: ' . $version,
+                data: $version
             );
         }
 
@@ -116,7 +114,7 @@ trait MessageTrait
     ): static {
         if (!$this->isHeaderNameValid($name)) {
             throw Exceptional::InvalidArgument(
-                'Invalid header name: ' . $name
+                message: 'Invalid header name: ' . $name
             );
         }
 
@@ -144,7 +142,7 @@ trait MessageTrait
     ): static {
         if (!$this->isHeaderNameValid($name)) {
             throw Exceptional::InvalidArgument(
-                'Invalid header name: ' . $name
+                message: 'Invalid header name: ' . $name
             );
         }
 
@@ -232,9 +230,8 @@ trait MessageTrait
 
             if (!static::isHeaderValueValid($value)) {
                 throw Exceptional::InvalidArgument(
-                    'Invalid header value',
-                    null,
-                    $value
+                    message: 'Invalid header value',
+                    data: $value
                 );
             }
 
@@ -346,16 +343,16 @@ trait MessageTrait
             !preg_match('/^application\/json\b/i', $this->getHeaderLine('Content-Type'))
         ) {
             throw Exceptional::UnexpectedValue(
-                'Body is not JSON'
+                message: 'Body is not JSON'
             );
         }
 
         $output = json_decode($this->getBodyString(), true);
 
         if (is_iterable($output)) {
-            $output = new NativeMutableTree($output);
+            $output = new Tree($output);
         } else {
-            $output = new NativeMutableTree(null, $output);
+            $output = new Tree(null, $output);
         }
 
         return $output;
@@ -373,11 +370,11 @@ trait MessageTrait
             !preg_match('/^application\/x-www-form-urlencoded\b/i', $this->getHeaderLine('Content-Type'))
         ) {
             throw Exceptional::UnexpectedValue(
-                'Body is not form data'
+                message: 'Body is not form data'
             );
         }
 
-        return NativeMutableTree::fromDelimitedString($this->getBodyString());
+        return Tree::fromDelimitedString($this->getBodyString());
     }
 
 

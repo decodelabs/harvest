@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace DecodeLabs\Harvest\Middleware;
 
+use DecodeLabs\Coercion;
 use DecodeLabs\Genesis;
 use DecodeLabs\Harvest\PriorityProvider;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -46,7 +47,9 @@ class OverrideMethod implements
             $development &&
             ($method = ($request->getQueryParams()['method'] ?? null)) !== null
         ) {
-            $request = $request->withMethod($method);
+            $request = $request->withMethod(
+                Coercion::toString($method)
+            );
         }
 
 

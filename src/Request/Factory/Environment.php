@@ -30,8 +30,13 @@ class Environment implements ServerRequestFactoryInterface
         $uri = null,
         ?array $server = null
     ): Request {
-        $method ??= $_SERVER['REQUEST_METHOD'] ?? 'GET';
-        $server = $this->prepareServerData(array_merge($_SERVER, $server ?? []));
+        $method ??= Coercion::toString($_SERVER['REQUEST_METHOD'] ?? 'GET');
+
+        /** @var array<string,mixed> $server */
+        $server = array_merge($_SERVER, $server ?? []);
+        $server = $this->prepareServerData($server);
+
+        // @phpstan-ignore-next-line
         $files = $this->prepareFiles($_FILES);
         $headers = $this->extractHeaders($server);
         $uri ??= $this->extractUri($server, $headers);
@@ -40,12 +45,15 @@ class Environment implements ServerRequestFactoryInterface
             $cookies = $this->parseCookies($headers['cookie']);
         }
 
+        $cookies ??= $_COOKIE;
+
+        /** @var array<string,string> $cookies */
         return new Request(
             method: $method,
             uri: $uri,
             body: 'php://input',
             headers: $headers,
-            cookies: $cookies ?? $_COOKIE,
+            cookies: $cookies,
             files: $files,
             server: $server,
             protocol: $this->extractProtocol($server)
@@ -64,6 +72,7 @@ class Environment implements ServerRequestFactoryInterface
         // Extract apache headers
         if (
             function_exists('apache_request_headers') &&
+            // @phpstan-ignore-next-line
             false !== ($apache = apache_request_headers())
         ) {
             foreach ($apache as $key => $value) {
@@ -118,9 +127,8 @@ class Environment implements ServerRequestFactoryInterface
                 $output[$key] = $this->prepareFiles($value);
             } else {
                 throw Exceptional::InvalidArgument(
-                    'Invalid $_FILES array',
-                    null,
-                    $files
+                    message: 'Invalid $_FILES array',
+                    data: $files
                 );
             }
         }
@@ -161,11 +169,12 @@ class Environment implements ServerRequestFactoryInterface
             $this->flattenNestedFiles($key, $value, $output);
         }
 
+        // @phpstan-ignore-next-line
         return $this->prepareFiles($output);
     }
 
     /**
-     * @param array<string, mixed> $output
+     * @param array<string,mixed> &$output
      */
     protected function flattenNestedFiles(
         string $key,
@@ -175,9 +184,11 @@ class Environment implements ServerRequestFactoryInterface
         if (is_array($value)) {
             foreach ($value as $subKey => $subValue) {
                 if (!isset($output[$subKey])) {
+                    // @phpstan-ignore-next-line
                     $output[$subKey] = [];
                 }
 
+                // @phpstan-ignore-next-line
                 $this->flattenNestedFiles($key, $subValue, $output[$subKey]);
             }
         } else {
@@ -369,7 +380,7 @@ class Environment implements ServerRequestFactoryInterface
 
         if (!preg_match('#^(HTTP/)?(?P<version>[1-9]\d*(?:\.\d)?)$#', $output, $matches)) {
             throw Exceptional::UnexpectedValue(
-                'Unrecognized HTTP protocol version: ' . $output
+                message: 'Unrecognized HTTP protocol version: ' . $output
             );
         }
 

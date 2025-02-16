@@ -22,24 +22,17 @@ class Closure implements Stage
 {
     use StageTrait;
 
+    /**
+     * @var Callback(Request,Handler):Response
+     */
     protected Callback $closure;
 
-    /**
-     * Init with closure
-     */
-    public function __construct(
-        Callback $closure
-    ) {
-        $this->closure = $closure;
-    }
-
-    /**
-     * Get middleware
-     */
-    public function getMiddleware(): Middleware
-    {
-        return new class($this->closure) implements Middleware {
+    public Middleware $middleware {
+        get => $this->middleware ??= new class($this->closure) implements Middleware {
             public function __construct(
+                /**
+                 * @var Callback(Request,Handler):Response
+                 */
                 protected Callback $closure
             ) {
             }
@@ -51,5 +44,16 @@ class Closure implements Stage
                 return ($this->closure)($request, $handler);
             }
         };
+    }
+
+    /**
+     * Init with closure
+     *
+     * @param Callback(Request,Handler):Response $closure
+     */
+    public function __construct(
+        Callback $closure
+    ) {
+        $this->closure = $closure;
     }
 }

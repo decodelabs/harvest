@@ -59,7 +59,7 @@ class Dispatcher implements
     ): Response {
         if (empty($this->stages)) {
             throw Exceptional::Setup(
-                'No middleware stack has been set'
+                message: 'No middleware stack has been set'
             );
         }
 
@@ -158,7 +158,7 @@ class Dispatcher implements
 
             if (!$fiber->isTerminated()) {
                 throw Exceptional::Runtime(
-                    'Middleware stack has been corrupted'
+                    message: 'Middleware stack has been corrupted'
                 );
             }
 
@@ -173,7 +173,7 @@ class Dispatcher implements
 
         if (!$response instanceof Response) {
             throw Exceptional::Runtime(
-                'Middleware stack has been corrupted'
+                message: 'Middleware stack has been corrupted'
             );
         }
 
@@ -196,10 +196,10 @@ class Dispatcher implements
             // Array
             if (is_array($middleware)) {
                 if (is_string($key)) {
+                    /** @var array<string,mixed> $middleware  */
                     $this->add(new DeferredStage(
                         type: $key,
                         container: $this->container,
-                        /** @var array<string, mixed> $middleware  */
                         parameters: $middleware
                     ));
                 } else {
@@ -255,12 +255,12 @@ class Dispatcher implements
         // Unhandled
         else {
             throw Exceptional::Runtime(
-                'Middleware could not be resolved'
+                message: 'Middleware could not be resolved'
             );
         }
 
         if ($priority !== null) {
-            $stage->setPriority($priority);
+            $stage->priority = $priority;
         }
 
         return $this->stages[] = $stage;
@@ -274,7 +274,7 @@ class Dispatcher implements
     protected function sortStages(): void
     {
         usort($this->stages, function ($a, $b) {
-            return $a->getPriority() <=> $b->getPriority();
+            return $a->priority <=> $b->priority;
         });
     }
 

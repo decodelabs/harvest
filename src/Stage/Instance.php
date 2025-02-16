@@ -18,19 +18,11 @@ class Instance implements Stage
 {
     use StageTrait;
 
-    protected Middleware $middleware;
+    protected(set) Middleware $middleware;
 
     public function __construct(
         Middleware $middleware
     ) {
         $this->middleware = $middleware;
-    }
-
-    /**
-     * Get middleware
-     */
-    public function getMiddleware(): Middleware
-    {
-        return $this->middleware;
     }
 }

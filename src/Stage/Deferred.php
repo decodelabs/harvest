@@ -32,6 +32,26 @@ class Deferred implements Stage
      */
     protected ?array $parameters = null;
 
+
+    public Middleware $middleware {
+        get {
+            if(isset($this->middleware)) {
+                return $this->middleware;
+            }
+
+            $class = Archetype::resolve(Middleware::class, $this->type);
+
+            $slingshot = new Slingshot(
+                container: $this->container,
+                parameters: $this->parameters ?? []
+            );
+
+            return $this->middleware = $slingshot->newInstance($class);
+        }
+    }
+
+
+
     /**
      * Init with middleware class name
      *
@@ -55,20 +75,5 @@ class Deferred implements Stage
         ) {
             $this->priority = (int)$priority;
         }
-    }
-
-    /**
-     * Get middleware
-     */
-    public function getMiddleware(): Middleware
-    {
-        $class = Archetype::resolve(Middleware::class, $this->type);
-
-        $slingshot = new Slingshot(
-            container: $this->container,
-            parameters: $this->parameters ?? []
-        );
-
-        return $slingshot->newInstance($class);
     }
 }
