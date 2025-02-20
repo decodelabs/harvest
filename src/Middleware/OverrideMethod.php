@@ -48,7 +48,7 @@ class OverrideMethod implements
             ($method = ($request->getQueryParams()['method'] ?? null)) !== null
         ) {
             $request = $request->withMethod(
-                Coercion::toString($method)
+                Coercion::asString($method)
             );
         }
 

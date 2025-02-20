@@ -12,7 +12,7 @@
         "php": "^8.4",
 
         "decodelabs/archetype": "^0.3.8",
-        "decodelabs/coercion": "^0.2.15",
+        "decodelabs/coercion": "^0.3",
         "decodelabs/collections": "^0.10.2",
         "decodelabs/compass": "^0.3",
         "decodelabs/deliverance": "^0.2.14",
@@ -30,7 +30,7 @@
     },
     "require-dev": {
         "decodelabs/atlas": "^0.12.3",
-        "decodelabs/genesis": "^0.10",
+        "decodelabs/genesis": "^0.11",
         "decodelabs/pandora": "^0.3",
         "decodelabs/sanctum": "^0.3",
         "decodelabs/phpstan-decodelabs": "^0.7"
