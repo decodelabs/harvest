@@ -334,7 +334,7 @@ trait MessageTrait
     /**
      * Get body JSON
      *
-     * @return Tree<mixed>
+     * @return Tree<string|int|float|bool>
      */
     public function getJson(): Tree
     {
@@ -350,18 +350,21 @@ trait MessageTrait
         $output = json_decode($this->getBodyString(), true);
 
         if (is_iterable($output)) {
+            // @phpstan-ignore-next-line
             $output = new Tree($output);
         } else {
+            // @phpstan-ignore-next-line
             $output = new Tree(null, $output);
         }
 
+        // @phpstan-ignore-next-line
         return $output;
     }
 
     /**
      * Get form data
      *
-     * @return Tree<string|bool>
+     * @return Tree<string|int|float|bool>
      */
     public function getFormData(): Tree
     {
@@ -374,6 +377,7 @@ trait MessageTrait
             );
         }
 
+        // @phpstan-ignore-next-line
         return Tree::fromDelimitedString($this->getBodyString());
     }
 

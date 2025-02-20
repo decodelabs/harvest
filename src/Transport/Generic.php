@@ -123,7 +123,7 @@ class Generic implements Transport
             isset($_SERVER['HTTP_X_SENDFILE_TYPE']) &&
             $_SERVER['HTTP_X_SENDFILE_TYPE'] !== 'X-Accel-Redirect'
         ) {
-            $this->sendfile = Coercion::toString($_SERVER['HTTP_X_SENDFILE_TYPE']);
+            $this->sendfile = Coercion::asString($_SERVER['HTTP_X_SENDFILE_TYPE']);
         }
 
         if (
@@ -132,7 +132,7 @@ class Generic implements Transport
             $stream->getMetadata('wrapper_type') === 'plainfile' &&
             ($filePath = $stream->getMetadata('uri'))
         ) {
-            header($this->sendfile . ': ' . Coercion::toString($filePath), true, $status);
+            header($this->sendfile . ': ' . Coercion::asString($filePath), true, $status);
             $sendData = false;
         }
 

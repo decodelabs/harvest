@@ -30,7 +30,7 @@ class Environment implements ServerRequestFactoryInterface
         $uri = null,
         ?array $server = null
     ): Request {
-        $method ??= Coercion::toString($_SERVER['REQUEST_METHOD'] ?? 'GET');
+        $method ??= Coercion::asString($_SERVER['REQUEST_METHOD'] ?? 'GET');
 
         /** @var array<string,mixed> $server */
         $server = array_merge($_SERVER, $server ?? []);
@@ -146,11 +146,11 @@ class Environment implements ServerRequestFactoryInterface
         array $file
     ): UploadedFileInterface {
         return new UploadedFile(
-            Coercion::toString($file['tmp_name']),
-            Coercion::toIntOrNull($file['size']),
-            Coercion::toInt($file['error']),
-            Coercion::toStringOrNull($file['name']),
-            Coercion::toStringOrNull($file['type'])
+            Coercion::asString($file['tmp_name']),
+            Coercion::tryInt($file['size']),
+            Coercion::asInt($file['error']),
+            Coercion::tryString($file['name']),
+            Coercion::tryString($file['type'])
         );
     }
 
@@ -223,7 +223,7 @@ class Environment implements ServerRequestFactoryInterface
                 strpos($key, 'HTTP_') === 0
             ) {
                 $name = strtr(strtolower(substr($key, 5)), '_', '-');
-                $headers[$name] = Coercion::toString($value);
+                $headers[$name] = Coercion::asString($value);
                 continue;
             }
 
@@ -232,7 +232,7 @@ class Environment implements ServerRequestFactoryInterface
                 strpos($key, 'CONTENT_') === 0
             ) {
                 $name = 'content-' . strtolower(substr($key, 8));
-                $headers[$name] = Coercion::toString($value);
+                $headers[$name] = Coercion::asString($value);
                 continue;
             }
         }
@@ -327,8 +327,8 @@ class Environment implements ServerRequestFactoryInterface
         }
 
         return [
-            Coercion::toString($host),
-            Coercion::toIntOrNull($port)
+            Coercion::asString($host),
+            Coercion::tryInt($port)
         ];
     }
 
@@ -347,10 +347,10 @@ class Environment implements ServerRequestFactoryInterface
             $iisRewrite === '1' &&
             $unencoded !== null
         ) {
-            return Coercion::toString($unencoded);
+            return Coercion::asString($unencoded);
         }
 
-        $output = Coercion::toStringOrNull(
+        $output = Coercion::tryString(
             $server['HTTP_X_REWRITE_URL'] ??
             $server['HTTP_X_ORIGINAL_URL'] ??
             $server['REQUEST_URI'] ??
@@ -361,7 +361,7 @@ class Environment implements ServerRequestFactoryInterface
             return (string)preg_replace('#^[^/:]+://[^/]+#', '', $output);
         }
 
-        return Coercion::toString($server['ORIG_PATH_INFO'] ?? '/');
+        return Coercion::asString($server['ORIG_PATH_INFO'] ?? '/');
     }
 
 
@@ -374,7 +374,7 @@ class Environment implements ServerRequestFactoryInterface
     public function extractProtocol(
         array $server
     ): string {
-        if (null === ($output = Coercion::toStringOrNull($server['SERVER_PROTOCOL'] ?? null))) {
+        if (null === ($output = Coercion::tryString($server['SERVER_PROTOCOL'] ?? null))) {
             return 'http';
         }
 

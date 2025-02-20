@@ -249,15 +249,15 @@ class Context implements UriFactory
         $server = $request->getServerParams();
 
         if (isset($server['HTTP_X_FORWARDED_FOR'])) {
-            $ips .= Coercion::toString($server['HTTP_X_FORWARDED_FOR']) . ',';
+            $ips .= Coercion::asString($server['HTTP_X_FORWARDED_FOR']) . ',';
         }
 
         if (isset($server['REMOTE_ADDR'])) {
-            $ips .= Coercion::toString($server['REMOTE_ADDR']) . ',';
+            $ips .= Coercion::asString($server['REMOTE_ADDR']) . ',';
         }
 
         if (isset($server['HTTP_CLIENT_IP'])) {
-            $ips .= Coercion::toString($server['HTTP_CLIENT_IP']) . ',';
+            $ips .= Coercion::asString($server['HTTP_CLIENT_IP']) . ',';
         }
 
         $parts = explode(',', rtrim($ips, ','));
