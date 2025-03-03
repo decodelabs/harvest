@@ -1,3 +1,5 @@
+* Improved origin handling in CORS Middleware
+
 ## v0.4.2 (2025-03-03)
 * Added closure and generator support to response factories
 
