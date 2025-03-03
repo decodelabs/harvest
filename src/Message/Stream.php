@@ -9,13 +9,18 @@ declare(strict_types=1);
 
 namespace DecodeLabs\Harvest\Message;
 
+use Closure;
 use DecodeLabs\Deliverance\Channel\Stream as Channel;
 use DecodeLabs\Exceptional;
+use Generator;
 use Psr\Http\Message\StreamInterface;
+use Stringable;
 use Throwable;
 
 class Stream implements StreamInterface
 {
+    use StringableToStringTrait;
+
     protected ?Channel $channel;
 
     /**
@@ -38,17 +43,22 @@ class Stream implements StreamInterface
 
     /**
      * Create from string
+     *
+     * @param string|Stringable|Generator<string|Stringable>|Closure():(string|Stringable|Generator<string|Stringable>) $content
      */
     public static function fromString(
-        string $content,
+        string|Stringable|Generator|Closure $content,
         string $mode = 'r+'
     ): StreamInterface {
+        $content = self::stringableToString($content);
         $output = self::createTemp($mode);
         $output->write($content);
         $output->rewind();
 
         return $output;
     }
+
+
 
 
     /**

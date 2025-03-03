@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace DecodeLabs\Harvest\Response;
 
+use Closure;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Harvest\Message\Stream as MessageStream;
 use Stringable;
@@ -18,17 +19,21 @@ class Json extends Stream
     /**
      * Init with JSON stream and content type headers set
      *
-     * @param array<string, string|Stringable|array<string|Stringable>> $headers
+     * @param array<string,string|Stringable|array<string|Stringable>> $headers
      */
     public function __construct(
         mixed $data,
         int $status = 200,
         array $headers = []
     ) {
+        if ($data instanceof Closure) {
+            $data = $data($this);
+        }
+
         $json = json_encode(
             $data,
             JSON_UNESCAPED_SLASHES |
-            JSON_PRETTY_PRINT
+                JSON_PRETTY_PRINT
         );
 
         if ($json === false) {

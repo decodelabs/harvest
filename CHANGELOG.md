@@ -1,3 +1,6 @@
+## v0.4.2 (2025-03-03)
+* Added closure and generator support to response factories
+
 ## v0.4.1 (2025-02-20)
 * Upgraded Coercion dependency
 * Upgraded Genesis dependency

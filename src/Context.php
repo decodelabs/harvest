@@ -16,7 +16,7 @@ use DecodeLabs\Coercion;
 use DecodeLabs\Compass\Ip;
 use DecodeLabs\Deliverance\Channel\Stream as Channel;
 use DecodeLabs\Harvest;
-use DecodeLabs\Harvest\Message\Generator;
+use DecodeLabs\Harvest\Message\Generator as MessageGenerator;
 use DecodeLabs\Harvest\Message\Stream;
 use DecodeLabs\Harvest\Middleware as MiddlewareNamespace;
 use DecodeLabs\Harvest\Request\Factory\Environment as EnvironmentFactory;
@@ -30,6 +30,7 @@ use DecodeLabs\Harvest\Response\Xml as XmlResponse;
 use DecodeLabs\Singularity;
 use DecodeLabs\Singularity\Url;
 use DecodeLabs\Veneer;
+use Generator;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as ServerRequest;
 use Psr\Http\Message\StreamInterface as StreamInterface;
@@ -113,7 +114,7 @@ class Context implements UriFactory
     /**
      * Create stream respomse
      *
-     * @param array<string, string|Stringable|array<string|Stringable>> $headers
+     * @param array<string,string|Stringable|array<string|Stringable>> $headers
      */
     public function stream(
         string|Channel|StreamInterface $body = 'php://memory',
@@ -125,11 +126,11 @@ class Context implements UriFactory
 
     /**
      * Create text response
-     *
-     * @param array<string, string|Stringable|array<string|Stringable>> $headers
+     * @param string|Stringable|Generator<string|Stringable>|Closure(TextResponse=):(string|Stringable|Generator<string|Stringable>) $text
+     * @param array<string,string|Stringable|array<string|Stringable>> $headers
      */
     public function text(
-        string $text,
+        string|Stringable|Generator|Closure $text,
         int $status = 200,
         array $headers = []
     ): TextResponse {
@@ -138,11 +139,11 @@ class Context implements UriFactory
 
     /**
      * Create HTML response
-     *
-     * @param array<string, string|Stringable|array<string|Stringable>> $headers
+     * @param string|Stringable|Generator<string|Stringable>|Closure(HtmlResponse=):(string|Stringable|Generator<string|Stringable>) $html
+     * @param array<string,string|Stringable|array<string|Stringable>> $headers
      */
     public function html(
-        string $html,
+        string|Stringable|Generator|Closure $html,
         int $status = 200,
         array $headers = []
     ): HtmlResponse {
@@ -152,7 +153,7 @@ class Context implements UriFactory
     /**
      * Create JSON response
      *
-     * @param array<string, string|Stringable|array<string|Stringable>> $headers
+     * @param array<string,string|Stringable|array<string|Stringable>> $headers
      */
     public function json(
         mixed $data,
@@ -164,11 +165,11 @@ class Context implements UriFactory
 
     /**
      * Create XML response
-     *
-     * @param array<string, string|Stringable|array<string|Stringable>> $headers
+     * @param string|Stringable|Generator<string|Stringable>|Closure(XmlResponse=):(string|Stringable|Generator<string|Stringable>) $xml
+     * @param array<string,string|Stringable|array<string|Stringable>> $headers
      */
     public function xml(
-        string $xml,
+        string|Stringable|Generator|Closure $xml,
         int $status = 200,
         array $headers = []
     ): XmlResponse {
@@ -178,7 +179,7 @@ class Context implements UriFactory
     /**
      * Create redirect response
      *
-     * @param array<string, string|Stringable|array<string|Stringable>> $headers
+     * @param array<string,string|Stringable|array<string|Stringable>> $headers
      */
     public function redirect(
         string|UriInterface $uri,
@@ -192,8 +193,8 @@ class Context implements UriFactory
     /**
      * Create iteration response
      *
-     * @param iterable<int|string, string>|Closure(Generator):(iterable<int|string, string>|null) $iterator
-     * @param array<string, string|Stringable|array<string|Stringable>> $headers
+     * @param iterable<int|string,string>|Closure(MessageGenerator):(iterable<int|string, string>|null) $iterator
+     * @param array<string,string|Stringable|array<string|Stringable>> $headers
      */
     public function generator(
         iterable|Closure $iterator,
@@ -201,7 +202,7 @@ class Context implements UriFactory
         array $headers = [],
     ): StreamResponse {
         return $this->stream(
-            new Generator($iterator),
+            new MessageGenerator($iterator),
             $status,
             [
                 'Transfer-Encoding' => 'chunked',
@@ -213,15 +214,15 @@ class Context implements UriFactory
     /**
      * Create iteration response
      *
-     * @param iterable<int|string, string>|Closure(Generator):(iterable<int|string, string>|null) $iterator
-     * @param array<string, string|Stringable|array<string|Stringable>> $headers
+     * @param iterable<int|string,string>|Closure(MessageGenerator):(iterable<int|string, string>|null) $iterator
+     * @param array<string,string|Stringable|array<string|Stringable>> $headers
      */
     public function liveGenerator(
         iterable|Closure $iterator,
         int $status = 200,
         array $headers = []
     ): StreamResponse {
-        $generator = new Generator($iterator, false);
+        $generator = new MessageGenerator($iterator, false);
 
         // Send whitespace to clear browser buffers
         $generator->write(str_repeat(' ', 1024) . "\n");
