@@ -59,6 +59,10 @@ trait StageTrait
     public function run(
         Request $request
     ): Response {
-        return $this->middleware->process($request, $this);
+        if ($middleware = $this->middleware) {
+            return $middleware->process($request, $this);
+        }
+
+        return $this->handle($request);
     }
 }

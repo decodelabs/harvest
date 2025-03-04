@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace DecodeLabs\Harvest\Stage;
 
 use DecodeLabs\Archetype;
+use DecodeLabs\Exceptional;
 use DecodeLabs\Harvest\Stage;
 use DecodeLabs\Harvest\StageTrait;
 use DecodeLabs\Slingshot;
@@ -32,14 +33,26 @@ class Deferred implements Stage
      */
     protected ?array $parameters = null;
 
+    protected bool $optional = false;
 
-    public Middleware $middleware {
+
+    public ?Middleware $middleware {
         get {
-            if(isset($this->middleware)) {
+            if (isset($this->middleware)) {
                 return $this->middleware;
             }
 
-            $class = Archetype::resolve(Middleware::class, $this->type);
+            $class = Archetype::tryResolve(Middleware::class, $this->type);
+
+            if ($class === null) {
+                if ($this->optional) {
+                    return null;
+                } else {
+                    throw Exceptional::Runtime(
+                        message: 'Middleware ' . $this->type . ' could not be resolved'
+                    );
+                }
+            }
 
             $slingshot = new Slingshot(
                 container: $this->container,
@@ -63,6 +76,8 @@ class Deferred implements Stage
         ?Container $container = null,
         ?array $parameters = null
     ) {
+        $this->optional = str_starts_with($type, '?');
+        $type = ltrim($type, '?');
         [$type, $priority] = explode(':', $type, 2) + [$type, null];
 
         $this->type = (string)$type;
