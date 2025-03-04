@@ -18,7 +18,7 @@ class Instance implements Stage
 {
     use StageTrait;
 
-    protected(set) Middleware $middleware;
+    protected(set) ?Middleware $middleware;
 
     public function __construct(
         Middleware $middleware

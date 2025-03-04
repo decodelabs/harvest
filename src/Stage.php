@@ -18,7 +18,7 @@ interface Stage extends Handler
 {
     public int $priority { get; set; }
     public int $defaultPriority { get; }
-    public Middleware $middleware { get; }
+    public ?Middleware $middleware { get; }
 
     public function run(
         Request $handler

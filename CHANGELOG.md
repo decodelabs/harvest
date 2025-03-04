@@ -1,3 +1,7 @@
+## v0.4.3 (2025-03-04)
+* Improved origin handling in CORS Middleware
+* Support optional middleware stages
+
 ## v0.4.2 (2025-03-03)
 * Added closure and generator support to response factories
 

@@ -85,6 +85,10 @@ class Cors implements
         $allow = false;
         $origin = $request->getHeaderLine('Origin');
 
+        if (empty($origin)) {
+            return $response;
+        }
+
         if (empty($this->allow)) {
             if (!$development) {
                 return $response;
@@ -92,10 +96,6 @@ class Cors implements
 
             $allow = true;
         } else {
-            if (empty($origin)) {
-                return $response;
-            }
-
             foreach ($this->allow as $allow) {
                 if ($allow === '*') {
                     $allow = true;

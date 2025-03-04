@@ -27,15 +27,14 @@ class Closure implements Stage
      */
     protected Callback $closure;
 
-    public Middleware $middleware {
+    public ?Middleware $middleware {
         get => $this->middleware ??= new class($this->closure) implements Middleware {
             public function __construct(
                 /**
                  * @var Callback(Request,Handler):Response
                  */
                 protected Callback $closure
-            ) {
-            }
+            ) {}
 
             public function process(
                 Request $request,
