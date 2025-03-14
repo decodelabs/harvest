@@ -15,12 +15,13 @@ use DecodeLabs\Atlas\File;
 use DecodeLabs\Coercion;
 use DecodeLabs\Compass\Ip;
 use DecodeLabs\Deliverance\Channel\Stream as Channel;
+use DecodeLabs\Exceptional;
 use DecodeLabs\Harvest;
 use DecodeLabs\Harvest\Message\Generator as MessageGenerator;
 use DecodeLabs\Harvest\Message\Stream;
 use DecodeLabs\Harvest\Middleware as MiddlewareNamespace;
 use DecodeLabs\Harvest\Request\Factory\Environment as EnvironmentFactory;
-use DecodeLabs\Harvest\Response as ResponseNamespace;
+use DecodeLabs\Harvest\Response as HarvestResponse;
 use DecodeLabs\Harvest\Response\Html as HtmlResponse;
 use DecodeLabs\Harvest\Response\Json as JsonResponse;
 use DecodeLabs\Harvest\Response\Redirect as RedirectResponse;
@@ -29,6 +30,7 @@ use DecodeLabs\Harvest\Response\Text as TextResponse;
 use DecodeLabs\Harvest\Response\Xml as XmlResponse;
 use DecodeLabs\Singularity;
 use DecodeLabs\Singularity\Url;
+use DecodeLabs\Tagged\Markup;
 use DecodeLabs\Veneer;
 use Generator;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -37,6 +39,7 @@ use Psr\Http\Message\StreamInterface as StreamInterface;
 use Psr\Http\Message\UriFactoryInterface as UriFactory;
 use Psr\Http\Message\UriInterface;
 use Psr\Http\Server\MiddlewareInterface as Middleware;
+use ReflectionFunction;
 use Stringable;
 use Throwable;
 
@@ -106,6 +109,56 @@ class Context implements UriFactory
     ): Transport {
         $class = Archetype::resolve(Transport::class, $name);
         return new $class();
+    }
+
+
+
+
+    /**
+     * Transform mixed response to PSR-7 response
+     */
+    public function transform(
+        ServerRequest $request,
+        mixed $response
+    ): Response {
+        if($response instanceof Closure) {
+            $ref = new ReflectionFunction($response);
+
+            if($ref->getNumberOfParameters() > 0) {
+                throw Exceptional::UnexpectedValue(
+                    'Closure response must not accept any parameters'
+                );
+            }
+
+            $response = $response();
+        }
+
+        if ($response instanceof Response) {
+            return $response;
+        }
+
+        if($response instanceof ResponseProxy) {
+            return $response->toHttpResponse();
+        }
+
+        if(is_object($response)) {
+            $class = Archetype::tryResolve(Transformer::class, get_class($response));
+
+            if($class) {
+                return new $class()->transform($request, $response);
+            }
+        }
+
+        if($response instanceof Markup) {
+            return $this->html($response);
+        }
+
+        if(is_iterable($response)) {
+            return $this->json($response);
+        }
+
+        $response = Coercion::toString($response);
+        return $this->stream($response);
     }
 
 
@@ -286,7 +339,7 @@ Archetype::alias(
 
 Archetype::alias(
     Response::class,
-    ResponseNamespace::class
+    HarvestResponse::class
 );
 
 // Register Veneer
