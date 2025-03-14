@@ -1,3 +1,6 @@
+## v0.4.4 (2025-03-14)
+* Added ResponseProxy interface
+
 ## v0.4.3 (2025-03-04)
 * Improved origin handling in CORS Middleware
 * Support optional middleware stages
