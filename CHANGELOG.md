@@ -1,3 +1,6 @@
+## v0.4.5 (2025-03-14)
+* Added Response Transformer structure
+
 ## v0.4.4 (2025-03-14)
 * Added ResponseProxy interface
 
