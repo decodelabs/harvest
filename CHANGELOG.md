@@ -1,3 +1,6 @@
+## v0.4.6 (2025-03-25)
+* Added Vary: Origin to CORS Middleware
+
 ## v0.4.5 (2025-03-14)
 * Added Response Transformer structure
 

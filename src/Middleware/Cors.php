@@ -115,6 +115,8 @@ class Cors implements
                 'Access-Control-Allow-Origin',
                 $origin
             );
+
+            $response = $response->withHeader('Vary', 'Origin');
         }
 
         return $response;
