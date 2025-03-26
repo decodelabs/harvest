@@ -34,7 +34,7 @@
         "decodelabs/pandora": "^0.3",
         "decodelabs/sanctum": "^0.3",
         "decodelabs/phpstan-decodelabs": "^0.7",
-        "decodelabs/tagged": "^0.17"
+        "decodelabs/tagged": "^0.18"
     },
     "provide": {
         "php-http/message-factory-implementation": "1.0",
