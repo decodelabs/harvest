@@ -1,3 +1,5 @@
+* Upgraded Tagged dependency
+
 ## v0.4.6 (2025-03-25)
 * Added Vary: Origin to CORS Middleware
 
