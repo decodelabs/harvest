@@ -1,3 +1,7 @@
+## v0.4.7 (2025-04-02)
+* Upgraded Tagged dependency
+* Upgraded Collections dependency
+
 ## v0.4.6 (2025-03-25)
 * Added Vary: Origin to CORS Middleware
 
