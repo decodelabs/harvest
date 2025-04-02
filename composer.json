@@ -13,7 +13,7 @@
 
         "decodelabs/archetype": "^0.3.8",
         "decodelabs/coercion": "^0.3",
-        "decodelabs/collections": "^0.10.2",
+        "decodelabs/collections": "^0.11",
         "decodelabs/compass": "^0.3",
         "decodelabs/deliverance": "^0.2.14",
         "decodelabs/exceptional": "^0.5.3",
