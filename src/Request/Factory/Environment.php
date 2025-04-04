@@ -46,6 +46,17 @@ class Environment implements ServerRequestFactoryInterface
         }
 
         $cookies ??= $_COOKIE;
+        $parsedBody = null;
+
+        if(
+            isset($headers['content-type']) &&
+            (
+                str_starts_with($headers['content-type'], 'application/x-www-form-urlencoded') ||
+                str_starts_with($headers['content-type'], 'multipart/form-data')
+            )
+        ) {
+            $parsedBody = $_POST;
+        }
 
         /** @var array<string,string> $cookies */
         return new Request(
@@ -56,7 +67,8 @@ class Environment implements ServerRequestFactoryInterface
             cookies: $cookies,
             files: $files,
             server: $server,
-            protocol: $this->extractProtocol($server)
+            protocol: $this->extractProtocol($server),
+            parsedBody: $parsedBody
         );
     }
 
