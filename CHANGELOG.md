@@ -1,3 +1,6 @@
+## v0.4.8 (2025-04-04)
+* Improved form data handling
+
 ## v0.4.7 (2025-04-02)
 * Upgraded Tagged dependency
 * Upgraded Collections dependency

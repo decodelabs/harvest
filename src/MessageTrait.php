@@ -332,6 +332,87 @@ trait MessageTrait
     }
 
     /**
+     * Get form data
+     *
+     * @return Tree<string|int|float|bool>
+     */
+    public function getFormData(): Tree
+    {
+        $parts = explode(';', $this->getHeaderLine('Content-Type'));
+        $contentType = array_shift($parts);
+
+        return match($contentType) {
+            'application/x-www-form-urlencoded' => $this->extractFormUrlEncoded(),
+            'multipart/form-data' => $this->extractFormMultipart(),
+            'application/json' => $this->extractJson(),
+            default => throw Exceptional::UnexpectedValue(
+                message: 'Body is not form data'
+            )
+        };
+    }
+
+    /**
+     * Get form url encoded data
+     *
+     * @return Tree<string|int|float|bool>
+     */
+    public function getFormUrlEncoded(): Tree
+    {
+        if (
+            $this->hasHeader('Content-Type') &&
+            !preg_match('/^application\/x-www-form-urlencoded\b/i', $this->getHeaderLine('Content-Type'))
+        ) {
+            throw Exceptional::UnexpectedValue(
+                message: 'Body is not form url encoded'
+            );
+        }
+
+        return $this->extractFormUrlEncoded();
+    }
+
+    /**
+     * Extract form url encoded data
+     *
+     * @return Tree<string|int|float|bool>
+     */
+    protected function extractFormUrlEncoded(): Tree
+    {
+        // @phpstan-ignore-next-line
+        return Tree::fromDelimitedString($this->getBodyString());
+    }
+
+    /**
+     * Get form multipart data
+     *
+     * @return Tree<string|int|float|bool>
+     */
+    public function getFormMultipart(): Tree
+    {
+        if (
+            $this->hasHeader('Content-Type') &&
+            !preg_match('/^multipart\/form-data\b/i', $this->getHeaderLine('Content-Type'))
+        ) {
+            throw Exceptional::UnexpectedValue(
+                message: 'Body is not form multipart'
+            );
+        }
+
+        return $this->extractFormMultipart();
+    }
+
+    /**
+     * Extract form multipart data
+     *
+     * @return Tree<string|int|float|bool>
+     */
+    protected function extractFormMultipart(): Tree
+    {
+        // Cannot access multipart data from php://input
+        /** @var array<string,bool|float|int|string> $_POST */
+        return new Tree($_POST);
+    }
+
+    /**
      * Get body JSON
      *
      * @return Tree<string|int|float|bool>
@@ -347,6 +428,16 @@ trait MessageTrait
             );
         }
 
+        return $this->extractJson();
+    }
+
+    /**
+     * Extract JSON data
+     *
+     * @return Tree<string|int|float|bool>
+     */
+    protected function extractJson(): Tree
+    {
         $output = json_decode($this->getBodyString(), true);
 
         if (is_iterable($output)) {
@@ -359,26 +450,6 @@ trait MessageTrait
 
         // @phpstan-ignore-next-line
         return $output;
-    }
-
-    /**
-     * Get form data
-     *
-     * @return Tree<string|int|float|bool>
-     */
-    public function getFormData(): Tree
-    {
-        if (
-            $this->hasHeader('Content-Type') &&
-            !preg_match('/^application\/x-www-form-urlencoded\b/i', $this->getHeaderLine('Content-Type'))
-        ) {
-            throw Exceptional::UnexpectedValue(
-                message: 'Body is not form data'
-            );
-        }
-
-        // @phpstan-ignore-next-line
-        return Tree::fromDelimitedString($this->getBodyString());
     }
 
 
