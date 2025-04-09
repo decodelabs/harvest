@@ -1,3 +1,7 @@
+## v0.4.9 (2025-04-09)
+* Replaced Genesis info with Monarch
+* Upgraded Slingshot dependency
+
 ## v0.4.8 (2025-04-04)
 * Improved form data handling
 

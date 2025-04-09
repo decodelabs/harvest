@@ -9,8 +9,8 @@ declare(strict_types=1);
 
 namespace DecodeLabs\Harvest\Middleware;
 
-use DecodeLabs\Genesis;
 use DecodeLabs\Harvest\PriorityProvider;
+use DecodeLabs\Monarch;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\MiddlewareInterface as Middleware;
@@ -75,11 +75,7 @@ class Cors implements
         }
 
         // Env mode
-        if (class_exists(Genesis::class)) {
-            $development = Genesis::$environment->isDevelopment();
-        } else {
-            $development = false;
-        }
+        $development = Monarch::isDevelopment();
 
         // Check origin
         $allow = false;

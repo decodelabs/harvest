@@ -9,8 +9,8 @@ declare(strict_types=1);
 
 namespace DecodeLabs\Harvest\Middleware;
 
-use DecodeLabs\Genesis;
 use DecodeLabs\Harvest;
+use DecodeLabs\Monarch;
 use DecodeLabs\Harvest\PriorityProvider;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -36,12 +36,7 @@ class Https implements
         Request $request,
         Handler $next
     ): Response {
-        if (class_exists(Genesis::class)) {
-            $production = Genesis::$environment->isProduction();
-        } else {
-            $production = true;
-        }
-
+        $production = Monarch::isProduction();
 
         // Check for HTTPS
         if (
