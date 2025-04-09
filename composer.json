@@ -18,8 +18,9 @@
         "decodelabs/deliverance": "^0.2.14",
         "decodelabs/exceptional": "^0.5.3",
         "decodelabs/glitch-support": "^0.5.1",
+        "decodelabs/monarch": "^0.1.1",
         "decodelabs/singularity": "^0.3",
-        "decodelabs/slingshot": "^0.1.12",
+        "decodelabs/slingshot": "^0.2",
         "decodelabs/veneer": "^0.12.3",
 
         "psr/container": "^2.0.2",
@@ -30,7 +31,6 @@
     },
     "require-dev": {
         "decodelabs/atlas": "^0.12.3",
-        "decodelabs/genesis": "^0.11",
         "decodelabs/pandora": "^0.3",
         "decodelabs/sanctum": "^0.3",
         "decodelabs/phpstan-decodelabs": "^0.7",
