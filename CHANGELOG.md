@@ -1,3 +1,6 @@
+## v0.4.11 (2025-04-11)
+* Always return Tree for getFormData()
+
 ## v0.4.10 (2025-04-11)
 * Fixed last-chance transform response type
 

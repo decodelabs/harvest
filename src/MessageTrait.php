@@ -345,9 +345,7 @@ trait MessageTrait
             'application/x-www-form-urlencoded' => $this->extractFormUrlEncoded(),
             'multipart/form-data' => $this->extractFormMultipart(),
             'application/json' => $this->extractJson(),
-            default => throw Exceptional::UnexpectedValue(
-                message: 'Body is not form data'
-            )
+            default => $this->extractFormMultipart()
         };
     }
 
