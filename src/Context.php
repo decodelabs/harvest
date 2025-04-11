@@ -158,7 +158,7 @@ class Context implements UriFactory
         }
 
         $response = Coercion::toString($response);
-        return $this->stream($response);
+        return $this->html($response);
     }
 
 
