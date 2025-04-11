@@ -1,3 +1,6 @@
+## v0.4.10 (2025-04-11)
+* Fixed last-chance transform response type
+
 ## v0.4.9 (2025-04-09)
 * Replaced Genesis info with Monarch
 * Upgraded Slingshot dependency
