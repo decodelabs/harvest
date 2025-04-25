@@ -1,3 +1,5 @@
+* Upgraded Tagged dependency
+
 ## v0.4.11 (2025-04-11)
 * Always return Tree for getFormData()
 
