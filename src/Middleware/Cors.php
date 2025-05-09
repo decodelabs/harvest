@@ -9,17 +9,24 @@ declare(strict_types=1);
 
 namespace DecodeLabs\Harvest\Middleware;
 
-use DecodeLabs\Harvest\PriorityProvider;
+use DecodeLabs\Harvest\Middleware as HarvestMiddleware;
+use DecodeLabs\Harvest\MiddlewareGroup;
 use DecodeLabs\Monarch;
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Server\MiddlewareInterface as Middleware;
-use Psr\Http\Server\RequestHandlerInterface as Handler;
+use Psr\Http\Message\ResponseInterface as PsrResponse;
+use Psr\Http\Message\ServerRequestInterface as PsrRequest;
+use Psr\Http\Server\RequestHandlerInterface as PsrHandler;
 
-class Cors implements
-    Middleware,
-    PriorityProvider
-{
+class Cors implements HarvestMiddleware {
+
+    public MiddlewareGroup $group {
+        get => MiddlewareGroup::Outbound;
+    }
+
+    public int $priority {
+        get => -1;
+    }
+
+
     /**
      * @var array<string>
      */
@@ -36,21 +43,14 @@ class Cors implements
         $this->allow = $allow;
     }
 
-    /**
-     * Get default priority
-     */
-    public function getPriority(): int
-    {
-        return -1;
-    }
 
     /**
      * Process middleware
      */
     public function process(
-        Request $request,
-        Handler $next
-    ): Response {
+        PsrRequest $request,
+        PsrHandler $next
+    ): PsrResponse {
         $response = $next->handle($request);
         $response = $this->applyOrigin($request, $response);
 
@@ -66,9 +66,9 @@ class Cors implements
 
 
     protected function applyOrigin(
-        Request $request,
-        Response $response
-    ): Response {
+        PsrRequest $request,
+        PsrResponse $response
+    ): PsrResponse {
         // Check header
         if ($response->hasHeader('Access-Control-Allow-Origin')) {
             return $response;

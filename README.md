@@ -29,14 +29,10 @@ Harvest provides the full PSR-15 stack, including Request, Response, Middleware 
 use DecodeLabs\Harvest;
 use DecodeLabs\Harvest\Dispatcher;
 use DecodeLabs\Harvest\Middleware\ContentSecurityPolicy;
+use DecodeLabs\Harvest\Profile;
 
-// Create a Dispatcher
-$dispatcher = new Dispatcher(
-    $myPsrContainer // Ideally initialize with a PSR-11 container
-);
-
-// Add middleware
-$dispatcher->add(
+// Create a Middleware Profile
+$profile = new Profile(
     'ErrorHandler', // Resolve by name via container / Archetype
 
     new ContentSecurityPolicy(), // Add middleware instance
@@ -50,6 +46,9 @@ $dispatcher->add(
         return Harvest::text('Hello World!');
     }
 );
+
+// Create a Dispatcher
+$dispatcher = new Dispatcher($profile);
 
 $request = Harvest::createRequestFromEnvironment();
 $response = $dispatcher->dispatch($request);

@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace DecodeLabs\Harvest;
 
+use DecodeLabs\Coercion;
+use DecodeLabs\Collections\ArrayProvider;
 use DecodeLabs\Collections\Tree;
 use DecodeLabs\Deliverance\Channel\Stream as Channel;
 use DecodeLabs\Exceptional;
@@ -106,7 +108,7 @@ trait MessageTrait
     /**
      * Return new instance with header set
      *
-     * @param string|array<string> $value
+     * @param string|Stringable|int|float|array<string|Stringable|int|float>|ArrayProvider<int,string|Stringable|int|float> $value
      */
     public function withHeader(
         string $name,
@@ -134,7 +136,7 @@ trait MessageTrait
     /**
      * Merge $value with current value stack
      *
-     * @param string|array<string> $value
+     * @param string|Stringable|int|float|array<string|Stringable|int|float>|ArrayProvider<int,string|Stringable|int|float> $value
      */
     public function withAddedHeader(
         string $name,
@@ -215,18 +217,22 @@ trait MessageTrait
     /**
      * Prepare a header value
      *
-     * @param string|Stringable|int|float|array<string|Stringable|int|float> $value
+     * @param string|Stringable|int|float|array<string|Stringable|int|float>|ArrayProvider<int,string|Stringable|int|float> $value
      * @return array<string>
      */
     public static function normalizeHeader(
-        string|Stringable|int|float|array $value
+        string|Stringable|int|float|array|ArrayProvider $value
     ): array {
+        if($value instanceof ArrayProvider) {
+            $value = $value->toArray();
+        }
+
         if (!is_array($value)) {
             $value = [$value];
         }
 
         return array_map(function ($value) {
-            $value = (string)$value;
+            $value = Coercion::asString($value);
 
             if (!static::isHeaderValueValid($value)) {
                 throw Exceptional::InvalidArgument(

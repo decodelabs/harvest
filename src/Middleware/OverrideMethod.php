@@ -11,31 +11,33 @@ namespace DecodeLabs\Harvest\Middleware;
 
 use DecodeLabs\Coercion;
 use DecodeLabs\Monarch;
-use DecodeLabs\Harvest\PriorityProvider;
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Server\MiddlewareInterface as Middleware;
-use Psr\Http\Server\RequestHandlerInterface as Handler;
+use DecodeLabs\Harvest\Middleware as HarvestMiddleware;
+use DecodeLabs\Harvest\MiddlewareGroup;
+use Psr\Http\Message\ResponseInterface as PsrResponse;
+use Psr\Http\Message\ServerRequestInterface as PsrRequest;
+use Psr\Http\Server\RequestHandlerInterface as PsrHandler;
 
-class OverrideMethod implements
-    Middleware,
-    PriorityProvider
+class OverrideMethod implements HarvestMiddleware
 {
-    /**
-     * Get default priority
-     */
-    public function getPriority(): int
-    {
-        return -1;
+    public MiddlewareGroup $group {
+        get {
+            return MiddlewareGroup::Inbound;
+        }
+    }
+
+    public int $priority {
+        get {
+            return -10;
+        }
     }
 
     /**
      * Process middleware
      */
     public function process(
-        Request $request,
-        Handler $next
-    ): Response {
+        PsrRequest $request,
+        PsrHandler $next
+    ): PsrResponse {
         if (
             Monarch::isDevelopment() &&
             ($method = ($request->getQueryParams()['method'] ?? null)) !== null

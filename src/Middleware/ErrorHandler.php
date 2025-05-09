@@ -14,33 +14,28 @@ use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Proxy as GlitchProxy;
 use DecodeLabs\Harvest;
 use DecodeLabs\Harvest\NotFoundException;
-use DecodeLabs\Harvest\PriorityProvider;
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Server\MiddlewareInterface as Middleware;
-use Psr\Http\Server\RequestHandlerInterface as Handler;
+use DecodeLabs\Harvest\Middleware as HarvestMiddleware;
+use DecodeLabs\Harvest\MiddlewareGroup;
+use Psr\Http\Message\ResponseInterface as PsrResponse;
+use Psr\Http\Message\ServerRequestInterface as PsrRequest;
+use Psr\Http\Server\RequestHandlerInterface as PsrHandler;
 use Throwable;
 
-class ErrorHandler implements
-    Middleware,
-    PriorityProvider
+class ErrorHandler implements HarvestMiddleware
 {
-    /**
-     * Get default priority
-     */
-    public function getPriority(): int
-    {
-        return -100;
+    public MiddlewareGroup $group {
+        get => MiddlewareGroup::ErrorHandler;
+    }
+
+    public int $priority {
+        get => -100;
     }
 
 
-    /**
-     * Process middleware
-     */
     public function process(
-        Request $request,
-        Handler $next
-    ): Response {
+        PsrRequest $request,
+        PsrHandler $next
+    ): PsrResponse {
         try {
             return $next->handle($request);
         } catch (Throwable $e) {
@@ -50,9 +45,9 @@ class ErrorHandler implements
 
     protected function handleException(
         Throwable $e,
-        Request $request,
-        Handler $next
-    ): Response {
+        PsrRequest $request,
+        PsrHandler $next
+    ): PsrResponse {
         GlitchProxy::logException($e);
 
         try {
@@ -79,8 +74,8 @@ class ErrorHandler implements
     protected function handleCatastrophe(
         Throwable $e,
         Throwable $f,
-        Request $request
-    ): Response {
+        PsrRequest $request
+    ): PsrResponse {
         if ($request->getHeaderLine('Accept') === 'application/json') {
             $error = $f instanceof NotFoundException ? $e : $f;
 

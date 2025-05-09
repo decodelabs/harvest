@@ -13,33 +13,37 @@ use Closure as Callback;
 use DecodeLabs\Harvest\Stage;
 use DecodeLabs\Harvest\StageTrait;
 
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Server\MiddlewareInterface as Middleware;
-use Psr\Http\Server\RequestHandlerInterface as Handler;
+use Psr\Http\Message\ResponseInterface as PsrResponse;
+use Psr\Http\Message\ServerRequestInterface as PsrRequest;
+use Psr\Http\Server\MiddlewareInterface as PsrMiddleware;
+use Psr\Http\Server\RequestHandlerInterface as PsrHandler;
 
 class Closure implements Stage
 {
     use StageTrait;
 
+    public string $name {
+        get => 'closure:'.spl_object_id($this->closure);
+    }
+
     /**
-     * @var Callback(Request,Handler):Response
+     * @var Callback(PsrRequest,PsrHandler):PsrResponse
      */
     protected Callback $closure;
 
-    public ?Middleware $middleware {
-        get => $this->middleware ??= new class($this->closure) implements Middleware {
+    public ?PsrMiddleware $middleware {
+        get => $this->middleware ??= new class($this->closure) implements PsrMiddleware {
             public function __construct(
                 /**
-                 * @var Callback(Request,Handler):Response
+                 * @var Callback(PsrRequest,PsrHandler):PsrResponse
                  */
                 protected Callback $closure
             ) {}
 
             public function process(
-                Request $request,
-                Handler $handler
-            ): Response {
+                PsrRequest $request,
+                PsrHandler $handler
+            ): PsrResponse {
                 return ($this->closure)($request, $handler);
             }
         };
@@ -48,7 +52,7 @@ class Closure implements Stage
     /**
      * Init with closure
      *
-     * @param Callback(Request,Handler):Response $closure
+     * @param Callback(PsrRequest,PsrHandler):PsrResponse $closure
      */
     public function __construct(
         Callback $closure

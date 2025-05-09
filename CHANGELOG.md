@@ -1,3 +1,11 @@
+## v0.5.0 (2025-05-09)
+* Added Cookie and Cookie Collection constructs
+* Added cookie parsing to responses
+* Added Cookie collection to Harvest context
+* Added aggregate cookie Middleware
+* Split Middleware collection to Profile interface
+* Added Middleware group sorting
+* Refactored Middleware interfaces
 * Upgraded Tagged dependency
 
 ## v0.4.11 (2025-04-11)

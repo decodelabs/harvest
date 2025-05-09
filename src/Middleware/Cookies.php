@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace DecodeLabs\Harvest\Middleware;
 
 use DecodeLabs\Harvest;
+use DecodeLabs\Harvest\Cookie\Collection as CookieCollection;
 use DecodeLabs\Monarch;
 use DecodeLabs\Harvest\Middleware as HarvestMiddleware;
 use DecodeLabs\Harvest\MiddlewareGroup;
@@ -17,44 +18,36 @@ use Psr\Http\Message\ResponseInterface as PsrResponse;
 use Psr\Http\Message\ServerRequestInterface as PsrRequest;
 use Psr\Http\Server\RequestHandlerInterface as PsrHandler;
 
-class Https implements HarvestMiddleware
+class Cookies implements HarvestMiddleware
 {
     public MiddlewareGroup $group {
-        get => MiddlewareGroup::Inbound;
+        get => MiddlewareGroup::Outbound;
     }
 
     public int $priority {
-        get => -1;
+        get => -100;
     }
 
     public function process(
         PsrRequest $request,
         PsrHandler $next
     ): PsrResponse {
-        $production = Monarch::isProduction();
-
-        // Check for HTTPS
-        if (
-            $production &&
-            $request->getUri()->getScheme() !== 'https'
-        ) {
-            $url = $request->getUri()
-                ->withScheme('https')
-                ->withPort(null);
-
-            return Harvest::redirect($url);
-        }
-
-
-        // Continue
         $response = $next->handle($request);
 
+        if(!Harvest::$cookies->isEmpty()) {
+            if($response->hasHeader('Set-Cookie')) {
+                $collection = CookieCollection::from(
+                    $response->getHeader('Set-Cookie')
+                );
 
-        // HSTS
-        if ($production) {
+                $collection->merge(Harvest::$cookies);
+            } else {
+                $collection = Harvest::$cookies;
+            }
+
             $response = $response->withHeader(
-                'Strict-Transport-Security',
-                'max-age=31536000; includeSubDomains'
+                'Set-Cookie',
+                $collection->toStringArray()
             );
         }
 

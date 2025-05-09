@@ -17,9 +17,10 @@ use DecodeLabs\Compass\Ip;
 use DecodeLabs\Deliverance\Channel\Stream as Channel;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Harvest;
+use DecodeLabs\Harvest\Cookie\Collection as CookieCollection;
 use DecodeLabs\Harvest\Message\Generator as MessageGenerator;
 use DecodeLabs\Harvest\Message\Stream;
-use DecodeLabs\Harvest\Middleware as MiddlewareNamespace;
+use DecodeLabs\Harvest\Middleware;
 use DecodeLabs\Harvest\Request\Factory\Environment as EnvironmentFactory;
 use DecodeLabs\Harvest\Response as HarvestResponse;
 use DecodeLabs\Harvest\Response\Html as HtmlResponse;
@@ -32,19 +33,44 @@ use DecodeLabs\Singularity;
 use DecodeLabs\Singularity\Url;
 use DecodeLabs\Tagged\Markup;
 use DecodeLabs\Veneer;
+use DecodeLabs\Veneer\Plugin;
 use Generator;
-use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ResponseInterface as PsrResponse;
 use Psr\Http\Message\ServerRequestInterface as ServerRequest;
 use Psr\Http\Message\StreamInterface as StreamInterface;
 use Psr\Http\Message\UriFactoryInterface as UriFactory;
 use Psr\Http\Message\UriInterface;
-use Psr\Http\Server\MiddlewareInterface as Middleware;
+use Psr\Http\Server\MiddlewareInterface as PsrMiddleware;
 use ReflectionFunction;
 use Stringable;
 use Throwable;
 
 class Context implements UriFactory
 {
+    #[Plugin]
+    public CookieCollection $cookies {
+        get => $this->cookies ??= new CookieCollection();
+    }
+
+
+
+    public function loadDefaultProfile(): Profile
+    {
+        return new Profile(
+            // Error
+            'ErrorHandler',
+
+            // Inbound
+            'Https',
+            'Cors',
+
+            // Outbound
+            'Cookies'
+        );
+    }
+
+
+
     /**
      * Create Uri as PSR-17 factory
      */
@@ -120,7 +146,7 @@ class Context implements UriFactory
     public function transform(
         ServerRequest $request,
         mixed $response
-    ): Response {
+    ): PsrResponse {
         if($response instanceof Closure) {
             $ref = new ReflectionFunction($response);
 
@@ -133,7 +159,7 @@ class Context implements UriFactory
             $response = $response();
         }
 
-        if ($response instanceof Response) {
+        if ($response instanceof PsrResponse) {
             return $response;
         }
 
@@ -332,13 +358,12 @@ class Context implements UriFactory
 
 // Register interfaces
 Archetype::alias(
-    Middleware::class,
-    /** @phpstan-ignore-next-line */
-    MiddlewareNamespace::class
+    PsrMiddleware::class,
+    Middleware::class
 );
 
 Archetype::alias(
-    Response::class,
+    PsrResponse::class,
     HarvestResponse::class
 );
 
