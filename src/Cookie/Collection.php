@@ -208,6 +208,9 @@ class Collection implements
         return isset($this->cookies[$name]);
     }
 
+    /**
+     * @return $this
+     */
     public function remove(
         string $name
     ): static {
@@ -216,6 +219,9 @@ class Collection implements
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function merge(
         Collection $collection
     ): static {
@@ -230,6 +236,9 @@ class Collection implements
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function clear(): static
     {
         $this->cookies = [];

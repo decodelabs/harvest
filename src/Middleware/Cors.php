@@ -33,14 +33,22 @@ class Cors implements HarvestMiddleware {
     protected array $allow = [];
 
     /**
+     * @var array<string>
+     */
+    protected array $headers = [];
+
+    /**
      * Init with allow list
      *
      * @param array<string> $allow
+     * @param array<string> $headers
      */
     public function __construct(
-        array $allow = []
+        array $allow = [],
+        array $headers = []
     ) {
         $this->allow = $allow;
+        $this->headers = $headers;
     }
 
 
@@ -54,10 +62,19 @@ class Cors implements HarvestMiddleware {
         $response = $next->handle($request);
         $response = $this->applyOrigin($request, $response);
 
-        if (!$response->hasHeader('Access-Control-Allow-Headers')) {
+        if (
+            $request->hasHeader('Access-Control-Request-Method') &&
+            !$response->hasHeader('Access-Control-Allow-Headers')
+        ) {
+            if(empty($this->headers)) {
+                $headers = '*';
+            } else {
+                $headers = implode(', ', $this->headers);
+            }
+
             $response = $response->withHeader(
                 'Access-Control-Allow-Headers',
-                'Content-Type, Authorization, X-Requested-With'
+                $headers
             );
         }
 
@@ -74,9 +91,6 @@ class Cors implements HarvestMiddleware {
             return $response;
         }
 
-        // Env mode
-        $development = Monarch::isDevelopment();
-
         // Check origin
         $allow = false;
         $origin = $request->getHeaderLine('Origin');
@@ -86,10 +100,6 @@ class Cors implements HarvestMiddleware {
         }
 
         if (empty($this->allow)) {
-            if (!$development) {
-                return $response;
-            }
-
             $allow = true;
         } else {
             foreach ($this->allow as $allow) {

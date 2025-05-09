@@ -62,10 +62,11 @@ class Context implements UriFactory
 
             // Inbound
             'Https',
-            'Cors',
 
             // Outbound
-            'Cookies'
+            'LastModified',
+            'Cookies',
+            'Cors'
         );
     }
 

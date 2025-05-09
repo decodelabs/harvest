@@ -69,7 +69,7 @@ Middleware is sorted by a dual level priority system, first grouped by the _inte
 - **Generic** - generic Middleware that does not fit into the above categories
 - **Generator** - generates or loads the primary response content
 
-Then each group is sorted by the _priority_ of the Middleware, with lower numbers being higher in the group. `Harvest` Middleware implement an extension to the Psr Middleware interface, defining defaults for group and priority.
+Then each group is sorted by the _priority_ of the Middleware, with lower numbers being higher in the group. Harvest Middleware implement an extension to the Psr Middleware interface, defining defaults for group and priority.
 
 These can be overridden when defining your `Profile`:
 
@@ -149,7 +149,7 @@ $generator = Harvest::generator(function() {
 
 ### Cookies
 
-Harvest provides a `Cookies Middlewar`e and a global `Cookie Collection` that allows you to define request-level cookies separately from the response generation process and merges them into the response. Just make sure the Cookie Middleware is added to your `Profile`.
+Harvest provides a `Cookies` Middleware and a global `Cookie Collection` that allows you to define request-level cookies separately from the response generation process and merges them into the response. Just make sure the Cookie Middleware is added to your `Profile`.
 
 
 ```php
