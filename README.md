@@ -24,6 +24,9 @@ composer require decodelabs/harvest
 ## Usage
 
 Harvest provides the full PSR-15 stack, including Request, Response, Middleware and Handler interfaces.
+The root of the system is the `Dispatcher` which takes a `Request` and a Middleware `Profile` and returns a `Response`.
+
+The `Profile` defines what Middleware is used to process the request and how it is ordered.
 
 ```php
 use DecodeLabs\Harvest;
@@ -54,24 +57,41 @@ $request = Harvest::createRequestFromEnvironment();
 $response = $dispatcher->dispatch($request);
 ```
 
-String names passed to the Dispatcher will resolve via the optional PSR Container and then Archetype which has a default mapping for <code>DecodeLabs\Harvest\Middleware</code> but can easily be extended with:
+String names passed to a `Profile` will resolve via `Slingshot`, allowing for easy dependency injection and container resolution.
+
+#### Ordering
+
+Middleware is sorted by a dual level priority system, first grouped by the _intent_ of the Middleware, in this order:
+
+- **ErrorHandler** - catches and handles errors within the stack
+- **Inbound** - processes the request before it is passed to the next Middleware
+- **Outbound** - processes the response before it is sent to the client
+- **Generic** - generic Middleware that does not fit into the above categories
+- **Generator** - generates or loads the primary response content
+
+Then each group is sorted by the _priority_ of the Middleware, with lower numbers being higher in the group. `Harvest` Middleware implement an extension to the Psr Middleware interface, defining defaults for group and priority.
+
+These can be overridden when defining your `Profile`:
 
 ```php
-use DecodeLabs\Archetype;
-use DecodeLabs\Harvest\Middleware;
+use DecodeLabs\Harvest\Profile;
 
-Archetype::map(Middleware::class, MyMiddlewareNamespace::class);
+$profile = new Profile()
+    ->add('Cors', priority: 5, group: 'Generic')
+    ->add(new SomeOtherVendorMiddleware(), priority: 10, group: 'Inbound');
 ```
+
 
 ### Fibers
 
 Harvest uses PHP Fibers to _flatten_ the call stack within the dispatch loop - this makes for considerably less _noise_ when debugging and understanding Exception call stacks.
 
-Instead of a call stack that grows by at least 2 frames for every Middleware instance in the queue (which gets problematic very quickly), Harvest utilises the flexbility of Fibers to break out of the stack at each call to the _next_ HTTP handler and effectively run each Middleware as if it were in a flat list, but without breaking Exception handling or any of the semantics of stacking the Middleware contexts.
+Instead of a call stack that grows by at least 2 frames for every Middleware instance in the queue (which gets unwieldy very quickly), Harvest utilises the flexbility of Fibers to break out of the stack at each call to the _next_ HTTP handler and effectively run each Middleware as if it were in a flat list, but without breaking Exception handling or any of the semantics of stacking the Middleware contexts.
+
 
 ### Transports
 
-Once a Response has been generated, you can then use an instance of a Harvest <code>Transport</code> to send it to the client.
+Once a Response has been generated, you can then use an instance of a Harvest `Transport` to send it to the client.
 
 Harvest currently provides a Generic Transport implementation that uses PHP's built in header and output stream functions.
 
@@ -91,7 +111,7 @@ exit;
 
 ### Responses
 
-Harvest provides easy shortcuts for creating Response instances:
+Harvest provides easy shortcuts for creating Responses:
 
 ```php
 use DecodeLabs\Harvest;
@@ -119,11 +139,44 @@ $resource = Harvest::stream(Harvest::createStreamFromResource($resource)); // St
 $generator = Harvest::generator(function() {
     yield 'Custom content';
     yield ' can be written';
+    yield ' and streamed';
     yield ' from a generator';
 }, 200, [
     'Content-Type' => 'text/plain'
 ]);
 ```
+
+
+### Cookies
+
+Harvest provides a `Cookies Middlewar`e and a global `Cookie Collection` that allows you to define request-level cookies separately from the response generation process and merges them into the response. Just make sure the Cookie Middleware is added to your `Profile`.
+
+
+```php
+use DecodeLabs\Harvest;
+
+$profile->add('Cookies');
+
+Harvest::$cookies->set(
+    name: 'cookie-name',
+    value: 'cookie-value',
+    domain: 'example.com',
+    path: '/',
+    expires: '10 minutes',
+    maxAge: 600,
+    httpOnly: true,
+    secure: true,
+    sameSite: 'Strict',
+    partitioned: true
+);
+
+Harvest::$cookies->expire(
+    name: 'cookie-name',
+    domain: 'example.com',
+    path: '/',
+);
+```
+
 
 ## Licensing
 
