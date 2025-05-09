@@ -149,7 +149,7 @@ $generator = Harvest::generator(function() {
 
 ### Cookies
 
-Harvest provides a `Cookies Middlewar`e and a global `Cookie Collection` that allows you to define request-level cookies separately from the response generation process and merges them into the response. Just make sure the Cookie Middleware is added to your `Profile`.
+Harvest provides a `Cookies` Middleware and a global `Cookie Collection` that allows you to define request-level cookies separately from the response generation process and merges them into the response. Just make sure the Cookie Middleware is added to your `Profile`.
 
 
 ```php
