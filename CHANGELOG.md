@@ -1,3 +1,7 @@
+## v0.5.1 (2025-05-09)
+* Improved CORS headers
+* Added LastModified Middleware
+
 ## v0.5.0 (2025-05-09)
 * Added Cookie and Cookie Collection constructs
 * Added cookie parsing to responses
