@@ -64,6 +64,7 @@ class Context implements UriFactory
             'Https',
 
             // Outbound
+            'DefaultHeaders',
             'LastModified',
             'Cookies',
             'Cors'

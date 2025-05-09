@@ -1,3 +1,6 @@
+## v0.5.2 (2025-05-09)
+* Added DefaultHeaders Middleware
+
 ## v0.5.1 (2025-05-09)
 * Improved CORS headers
 * Added LastModified Middleware
