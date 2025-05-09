@@ -11,15 +11,15 @@ namespace DecodeLabs\Harvest\Response;
 
 use DecodeLabs\Deliverance\Channel\Stream as Channel;
 use DecodeLabs\Exceptional;
-use DecodeLabs\Harvest\MessageTrait;
 use DecodeLabs\Harvest\Response;
+use DecodeLabs\Harvest\ResponseTrait;
 use Psr\Http\Message\StreamInterface;
 use Stringable;
 
 class Stream implements Response
 {
-    use MessageTrait {
-        MessageTrait::__construct as protected __messageConstruct;
+    use ResponseTrait {
+        ResponseTrait::__construct as protected __messageConstruct;
     }
 
     /**

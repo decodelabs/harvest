@@ -9,66 +9,39 @@ declare(strict_types=1);
 
 namespace DecodeLabs\Harvest;
 
-use ArrayIterator;
-use Closure;
-use Countable;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Harvest\Stage\Closure as ClosureStage;
-use DecodeLabs\Harvest\Stage\Deferred as DeferredStage;
-use DecodeLabs\Harvest\Stage\Instance as InstanceStage;
 use Fiber;
-use Iterator;
 use IteratorAggregate;
-use Psr\Container\ContainerInterface as Container;
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Server\MiddlewareInterface as Middleware;
-use Psr\Http\Server\RequestHandlerInterface as Handler;
+use Psr\Http\Message\ResponseInterface as PsrResponse;
+use Psr\Http\Message\ServerRequestInterface as PsrRequest;
+use Psr\Http\Server\RequestHandlerInterface as PsrHandler;
 use Throwable;
 
-/**
- * @implements IteratorAggregate<Stage>
- */
-class Dispatcher implements
-    Handler,
-    Countable,
-    IteratorAggregate
+class Dispatcher implements PsrHandler
 {
-    /**
-     * @var array<int, Stage>
-     */
-    protected array $stages = [];
-    protected ?Container $container;
-
-
-    /**
-     * Init with Container
-     */
     public function __construct(
-        ?Container $container = null,
-    ) {
-        $this->container = $container;
-    }
-
+        private Profile $profile
+    ) {}
 
     /**
      * Begin stage stack navigation
      */
     public function handle(
-        Request $request
-    ): Response {
-        if (empty($this->stages)) {
+        PsrRequest $request
+    ): PsrResponse {
+        if ($this->profile->isEmpty()) {
             throw Exceptional::Setup(
                 message: 'No middleware stack has been set'
             );
         }
 
-        $this->sortStages();
 
-        $stages = $this->stages;
+        $stages = $this->profile->toList();
+
         $stages[] = new ClosureStage(function (
-            Request $request,
-            Handler $handler
+            PsrRequest $request,
+            PsrHandler $handler
         ) {
             throw Exceptional::NotFound(
                 message: 'No middleware could handle the current request',
@@ -103,7 +76,7 @@ class Dispatcher implements
             }
 
             /**
-             * @var Fiber<Request,Response,Response,Request> $fiber
+             * @var Fiber<PsrRequest,PsrResponse,PsrResponse,PsrRequest> $fiber
              */
 
             try {
@@ -171,130 +144,12 @@ class Dispatcher implements
             }
         }
 
-        if (!$response instanceof Response) {
+        if (!$response instanceof PsrResponse) {
             throw Exceptional::Runtime(
                 message: 'Middleware stack has been corrupted'
             );
         }
 
         return $response;
-    }
-
-
-
-    /**
-     * Add middleware to stack
-     *
-     * @param string|class-string<Middleware>|Middleware|Stage|Closure(Request, Handler):Response|array<mixed> ...$middlewares
-     *
-     * @return $this
-     */
-    public function add(
-        string|array|Closure|Stage|Middleware ...$middlewares
-    ): static {
-        foreach ($middlewares as $key => $middleware) {
-            // Array
-            if (is_array($middleware)) {
-                if (is_string($key)) {
-                    /** @var array<string,mixed> $middleware  */
-                    $this->add(new DeferredStage(
-                        type: $key,
-                        container: $this->container,
-                        parameters: $middleware
-                    ));
-                } else {
-                    /** @var array<int,string|class-string<Middleware>|Middleware|Stage|Closure(Request, Handler):Response>|array<string,array<mixed>> $middleware */
-                    $this->add(...$middleware);
-                }
-
-                continue;
-            }
-
-            $this->addPriority($middleware, null);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Add middleware with custom priority
-     *
-     * @param string|class-string<Middleware>|Middleware|Stage|Closure(Request, Handler):Response $middleware
-     */
-    public function addPriority(
-        string|Closure|Stage|Middleware $middleware,
-        ?int $priority
-    ): Stage {
-        // Stage
-        if ($middleware instanceof Stage) {
-            $stage = $middleware;
-        }
-
-        // Middleware
-        elseif ($middleware instanceof Middleware) {
-            $stage = new InstanceStage(
-                middleware: $middleware,
-            );
-        }
-
-        // Closure
-        elseif ($middleware instanceof Closure) {
-            $stage = new ClosureStage(
-                closure: $middleware,
-            );
-        }
-
-        // Deferred
-        elseif (is_string($middleware)) {
-            $stage = new DeferredStage(
-                type: $middleware,
-                container: $this->container,
-            );
-        }
-
-        // Unhandled
-        else {
-            throw Exceptional::Runtime(
-                message: 'Middleware could not be resolved'
-            );
-        }
-
-        if ($priority !== null) {
-            $stage->priority = $priority;
-        }
-
-        return $this->stages[] = $stage;
-    }
-
-
-
-    /**
-     * Sort stages according to priority
-     */
-    protected function sortStages(): void
-    {
-        usort($this->stages, function ($a, $b) {
-            return $a->priority <=> $b->priority;
-        });
-    }
-
-
-    /**
-     * Count stages
-     */
-    public function count(): int
-    {
-        return count($this->stages);
-    }
-
-    /**
-     * Get iterator
-     *
-     * @return Iterator<Stage>
-     */
-    public function getIterator(): Iterator
-    {
-        $this->sortStages();
-        return new ArrayIterator($this->stages);
     }
 }

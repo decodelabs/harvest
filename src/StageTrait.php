@@ -10,10 +10,10 @@ declare(strict_types=1);
 namespace DecodeLabs\Harvest;
 
 use DecodeLabs\Exceptional;
+use DecodeLabs\Harvest\Middleware as HarvestMiddleware;
 use Fiber;
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Server\MiddlewareInterface as Middleware;
+use Psr\Http\Message\ResponseInterface as PsrResponse;
+use Psr\Http\Message\ServerRequestInterface as PsrRequest;
 
 /**
  * @phpstan-require-implements Stage
@@ -24,15 +24,31 @@ trait StageTrait
         get => $this->priority ??= $this->defaultPriority;
     }
 
+    public MiddlewareGroup $group {
+        get => $this->group ??= $this->defaultGroup;
+    }
+
     public int $defaultPriority {
         get {
             $middleware = $this->middleware;
 
-            if (!$middleware instanceof PriorityProvider) {
-                return 0;
+            if (!$middleware instanceof HarvestMiddleware) {
+                return 10;
             }
 
-            return $middleware->getPriority();
+            return $middleware->priority;
+        }
+    }
+
+    public MiddlewareGroup $defaultGroup {
+        get {
+            $middleware = $this->middleware;
+
+            if (!$middleware instanceof HarvestMiddleware) {
+                return MiddlewareGroup::Generic;
+            }
+
+            return $middleware->group;
         }
     }
 
@@ -40,11 +56,11 @@ trait StageTrait
      * Fiber interchange
      */
     public function handle(
-        Request $request
-    ): Response {
+        PsrRequest $request
+    ): PsrResponse {
         $response = Fiber::suspend($request);
 
-        if (!$response instanceof Response) {
+        if (!$response instanceof PsrResponse) {
             throw Exceptional::UnexpectedValue(
                 message: 'Middleware did not return a response'
             );
@@ -57,8 +73,8 @@ trait StageTrait
      * Process middleware
      */
     public function run(
-        Request $request
-    ): Response {
+        PsrRequest $request
+    ): PsrResponse {
         if ($middleware = $this->middleware) {
             return $middleware->process($request, $this);
         }

@@ -11,22 +11,27 @@ namespace DecodeLabs\Harvest\Stage;
 
 use DecodeLabs\Archetype;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Glitch\Dumpable;;
 use DecodeLabs\Harvest\Stage;
 use DecodeLabs\Harvest\StageTrait;
 use DecodeLabs\Slingshot;
 use Psr\Container\ContainerInterface as Container;
-use Psr\Http\Server\MiddlewareInterface as Middleware;
+use Psr\Http\Server\MiddlewareInterface as PsrMiddleware;
 
-class Deferred implements Stage
+class Deferred implements
+    Stage,
+    Dumpable
 {
     use StageTrait;
 
+    public string $name {
+        get => $this->type;
+    }
+
     /**
-     * @var string|class-string<Middleware>
+     * @var string|class-string<PsrMiddleware>
      */
     protected string $type;
-
-    protected ?Container $container = null;
 
     /**
      * @var array<string, mixed>|null
@@ -36,13 +41,13 @@ class Deferred implements Stage
     protected bool $optional = false;
 
 
-    public ?Middleware $middleware {
+    public ?PsrMiddleware $middleware {
         get {
             if (isset($this->middleware)) {
                 return $this->middleware;
             }
 
-            $class = Archetype::tryResolve(Middleware::class, $this->type);
+            $class = Archetype::tryResolve(PsrMiddleware::class, $this->type);
 
             if ($class === null) {
                 if ($this->optional) {
@@ -55,7 +60,6 @@ class Deferred implements Stage
             }
 
             $slingshot = new Slingshot(
-                container: $this->container,
                 parameters: $this->parameters ?? []
             );
 
@@ -68,12 +72,11 @@ class Deferred implements Stage
     /**
      * Init with middleware class name
      *
-     * @param string|class-string<Middleware> $type
-     * @param array<string, mixed>|null $parameters
+     * @param string|class-string<PsrMiddleware> $type
+     * @param array<string,mixed>|null $parameters
      */
     public function __construct(
         string $type,
-        ?Container $container = null,
         ?array $parameters = null
     ) {
         $this->optional = str_starts_with($type, '?');
@@ -81,7 +84,6 @@ class Deferred implements Stage
         [$type, $priority] = explode(':', $type, 2) + [$type, null];
 
         $this->type = (string)$type;
-        $this->container = $container;
         $this->parameters = $parameters;
 
         if (
@@ -90,5 +92,22 @@ class Deferred implements Stage
         ) {
             $this->priority = (int)$priority;
         }
+    }
+
+
+
+    public function glitchDump(): iterable
+    {
+        yield 'className' => $this->group->name;
+
+        yield 'properties' => [
+            'name' => $this->name,
+            '*parameters' => $this->parameters,
+            '*optional' => $this->optional
+        ];
+
+        yield 'meta' => [
+            'priority' => $this->priority
+        ];
     }
 }

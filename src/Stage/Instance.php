@@ -9,19 +9,26 @@ declare(strict_types=1);
 
 namespace DecodeLabs\Harvest\Stage;
 
+use DecodeLabs\Coercion;
 use DecodeLabs\Harvest\Stage;
 use DecodeLabs\Harvest\StageTrait;
-
-use Psr\Http\Server\MiddlewareInterface as Middleware;
+use Psr\Http\Server\MiddlewareInterface as PsrMiddleware;
+use ReflectionClass;
 
 class Instance implements Stage
 {
     use StageTrait;
 
-    protected(set) ?Middleware $middleware;
+    public string $name {
+        get => new ReflectionClass(
+            Coercion::asType($this->middleware, PsrMiddleware::class)
+        )->getShortName();
+    }
+
+    protected(set) ?PsrMiddleware $middleware;
 
     public function __construct(
-        Middleware $middleware
+        PsrMiddleware $middleware
     ) {
         $this->middleware = $middleware;
     }

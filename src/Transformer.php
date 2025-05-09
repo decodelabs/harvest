@@ -9,8 +9,8 @@ declare(strict_types=1);
 
 namespace DecodeLabs\Harvest;
 
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ResponseInterface as PsrResponse;
+use Psr\Http\Message\ServerRequestInterface as PsrRequest;
 
 /**
  * @template T
@@ -21,7 +21,7 @@ interface Transformer
      * @param T $response
      */
     public function transform(
-        Request $request,
+        PsrRequest $request,
         mixed $response
-    ): Response;
+    ): PsrResponse;
 }
