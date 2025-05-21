@@ -12,6 +12,7 @@ namespace DecodeLabs\Harvest\Message;
 use Closure;
 use DecodeLabs\Deliverance\Channel\Stream as Channel;
 use DecodeLabs\Exceptional;
+use Deprecated;
 use Generator;
 use Psr\Http\Message\StreamInterface;
 use Stringable;
@@ -20,6 +21,13 @@ use Throwable;
 class Stream implements StreamInterface
 {
     use StringableToStringTrait;
+
+    /**
+     * @var resource|null
+     */
+    public mixed $ioResource {
+        get => $this->channel?->ioResource;
+    }
 
     protected ?Channel $channel;
 
@@ -77,19 +85,6 @@ class Stream implements StreamInterface
 
 
     /**
-     * Get resource from channel
-     *
-     * @return resource|null
-     */
-    public function getResource()
-    {
-        /** @var resource|null $output */
-        $output = $this->channel?->getResource();
-        return $output;
-    }
-
-
-    /**
      * Detaches the resource from the stream
      *
      * @return resource|null
@@ -97,7 +92,7 @@ class Stream implements StreamInterface
     public function detach()
     {
         /** @var resource|null $output */
-        $output = $this->channel?->getResource();
+        $output = $this->channel?->ioResource;
         $this->channel = null;
 
         return $output;
@@ -109,7 +104,7 @@ class Stream implements StreamInterface
      */
     public function getSize(): ?int
     {
-        if (null === ($resource = $this->getResource())) {
+        if (null === ($resource = $this->ioResource)) {
             return null;
         }
 
@@ -128,7 +123,7 @@ class Stream implements StreamInterface
      */
     public function tell(): int
     {
-        if (null === ($resource = $this->getResource())) {
+        if (null === ($resource = $this->ioResource)) {
             throw Exceptional::Io(
                 message: 'Cannot tell stream position, resource has been detached'
             );
@@ -158,7 +153,7 @@ class Stream implements StreamInterface
      */
     public function isSeekable(): bool
     {
-        if (null === ($resource = $this->getResource())) {
+        if (null === ($resource = $this->ioResource)) {
             return false;
         }
 
@@ -176,7 +171,7 @@ class Stream implements StreamInterface
     ): void {
         if (
             !$this->isSeekable() ||
-            null === ($resource = $this->getResource())
+            null === ($resource = $this->ioResource)
         ) {
             throw Exceptional::Io(
                 message: 'Stream is not seekable'
@@ -261,7 +256,7 @@ class Stream implements StreamInterface
     {
         if (
             !$this->isReadable() ||
-            null === ($resource = $this->getResource())
+            null === ($resource = $this->ioResource)
         ) {
             throw Exceptional::Io(
                 message: 'Stream is not readable'
@@ -288,7 +283,7 @@ class Stream implements StreamInterface
     public function getMetadata(
         ?string $key = null
     ): mixed {
-        if (null === ($resource = $this->getResource())) {
+        if (null === ($resource = $this->ioResource)) {
             throw Exceptional::Io(
                 message: 'Cannot get stream metadata, resource has been detached'
             );

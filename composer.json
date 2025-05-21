@@ -15,7 +15,7 @@
         "decodelabs/coercion": "^0.3",
         "decodelabs/collections": "^0.11",
         "decodelabs/compass": "^0.3",
-        "decodelabs/deliverance": "^0.2.14",
+        "decodelabs/deliverance": "^0.3",
         "decodelabs/enumerable": "^0.2.1",
         "decodelabs/exceptional": "^0.5.3",
         "decodelabs/glitch-support": "^0.5.1",
@@ -33,9 +33,13 @@
         "nesbot/carbon": "^3"
     },
     "require-dev": {
-        "decodelabs/atlas": "^0.12.3",
+        "decodelabs/atlas": "^0.13",
         "decodelabs/phpstan-decodelabs": "^0.7",
         "decodelabs/tagged": "^0.20"
+    },
+    "conflict": {
+        "decodelabs/atlas": "<0.13",
+        "decodelabs/tagged": "<0.20"
     },
     "provide": {
         "php-http/message-factory-implementation": "1.0",
