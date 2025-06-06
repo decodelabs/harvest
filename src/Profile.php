@@ -13,10 +13,11 @@ use ArrayIterator;
 use Closure;
 use Countable;
 use DecodeLabs\Exceptional;
-use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Harvest\Stage\Closure as ClosureStage;
 use DecodeLabs\Harvest\Stage\Deferred as DeferredStage;
 use DecodeLabs\Harvest\Stage\Instance as InstanceStage;
+use DecodeLabs\Nuance\Dumpable;
+use DecodeLabs\Nuance\Entity\NativeObject as NuanceEntity;
 use Iterator;
 use IteratorAggregate;
 use Psr\Http\Message\ResponseInterface as PsrResponse;
@@ -213,9 +214,11 @@ class Profile implements
         $this->sorted = true;
     }
 
-    public function glitchDump(): iterable
+    public function toNuanceEntity(): NuanceEntity
     {
+        $entity = new NuanceEntity($this);
         $this->sort();
-        yield 'values' => $this->stages;
+        $entity->values = $this->stages;
+        return $entity;
     }
 }

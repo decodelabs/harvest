@@ -11,11 +11,11 @@ namespace DecodeLabs\Harvest\Stage;
 
 use DecodeLabs\Archetype;
 use DecodeLabs\Exceptional;
-use DecodeLabs\Glitch\Dumpable;;
 use DecodeLabs\Harvest\Stage;
 use DecodeLabs\Harvest\StageTrait;
+use DecodeLabs\Nuance\Dumpable;
+use DecodeLabs\Nuance\Entity\NativeObject as NuanceEntity;
 use DecodeLabs\Slingshot;
-use Psr\Container\ContainerInterface as Container;
 use Psr\Http\Server\MiddlewareInterface as PsrMiddleware;
 
 class Deferred implements
@@ -95,19 +95,16 @@ class Deferred implements
     }
 
 
-
-    public function glitchDump(): iterable
+    public function toNuanceEntity(): NuanceEntity
     {
-        yield 'className' => $this->group->name;
+        $entity = new NuanceEntity($this);
+        $entity->itemName = $this->group->name;
 
-        yield 'properties' => [
-            'name' => $this->name,
-            '*parameters' => $this->parameters,
-            '*optional' => $this->optional
-        ];
+        $entity->setProperty('name', $this->name);
+        $entity->setProperty('parameters', $this->parameters, 'protected');
+        $entity->setProperty('optional', $this->optional, 'protected');
 
-        yield 'meta' => [
-            'priority' => $this->priority
-        ];
+        $entity->meta['priority'] = $this->priority;
+        return $entity;
     }
 }

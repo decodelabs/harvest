@@ -11,11 +11,11 @@ namespace DecodeLabs\Harvest\Middleware;
 
 use DecodeLabs\Exceptional;
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Proxy as GlitchProxy;
 use DecodeLabs\Harvest;
 use DecodeLabs\Harvest\NotFoundException;
 use DecodeLabs\Harvest\Middleware as HarvestMiddleware;
 use DecodeLabs\Harvest\MiddlewareGroup;
+use DecodeLabs\Monarch;
 use Psr\Http\Message\ResponseInterface as PsrResponse;
 use Psr\Http\Message\ServerRequestInterface as PsrRequest;
 use Psr\Http\Server\RequestHandlerInterface as PsrHandler;
@@ -48,7 +48,7 @@ class ErrorHandler implements HarvestMiddleware
         PsrRequest $request,
         PsrHandler $next
     ): PsrResponse {
-        GlitchProxy::logException($e);
+        Monarch::logException($e);
 
         try {
             if ($e instanceof Exceptional\Exception) {
@@ -103,7 +103,7 @@ class ErrorHandler implements HarvestMiddleware
             exit;
         }
 
-        GlitchProxy::logException($f);
+        Monarch::logException($f);
 
         return Harvest::text(
             '500 Internal Server Error' . "\n\n" .

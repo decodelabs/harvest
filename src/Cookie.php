@@ -12,9 +12,10 @@ namespace DecodeLabs\Harvest;
 use Carbon\CarbonImmutable as Carbon;
 use DateTimeInterface;
 use DecodeLabs\Exceptional;
-use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Harvest\Cookie\ParameterTrait;
 use DecodeLabs\Harvest\Cookie\SameSite;
+use DecodeLabs\Nuance\Dumpable;
+use DecodeLabs\Nuance\Entity\NativeObject as NuanceEntity;
 use Stringable;
 
 class Cookie implements
@@ -193,45 +194,46 @@ class Cookie implements
         return $output;
     }
 
-    public function glitchDump(): iterable
+    public function toNuanceEntity(): NuanceEntity
     {
-        $props = [
-            'name' => $this->name,
-            'value' => $this->value
-        ];
+        $entity = new NuanceEntity($this);
+
+        $entity->setProperty('name', $this->name);
+        $entity->setProperty('value', $this->value);
 
         if ($this->domain !== null) {
-            $props['domain'] = $this->domain;
+            $entity->setProperty('domain', $this->domain);
         }
 
         if ($this->path !== null) {
-            $props['path'] = $this->path;
+            $entity->setProperty('path', $this->path);
         }
 
         if ($this->expires !== null) {
-            $props['expires'] = $this->expires;
+            $entity->setProperty('expires', $this->expires);
         }
 
         if ($this->maxAge !== null) {
-            $props['maxAge'] = $this->maxAge;
+            $entity->setProperty('maxAge', $this->maxAge);
         }
 
         if ($this->secure) {
-            $props['secure'] = true;
+            $entity->setProperty('secure', true);
         }
 
         if ($this->httpOnly) {
-            $props['httpOnly'] = true;
+            $entity->setProperty('httpOnly', true);
         }
 
         if ($this->sameSite !== null) {
-            $props['sameSite'] = $this->sameSite;
+            $entity->setProperty('sameSite', $this->sameSite->getName());
         }
 
         if ($this->partitioned) {
-            $props['partitioned'] = true;
+            $entity->setProperty('partitioned', true);
         }
 
-        yield 'properties' => $props;
+        return $entity;
     }
+
 }

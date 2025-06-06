@@ -13,9 +13,10 @@ use ArrayIterator;
 use Countable;
 use DateTimeInterface;
 use DecodeLabs\Collections\ArrayProvider;
-use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Harvest\Cookie;
 use DecodeLabs\Harvest\Cookie\SameSite;
+use DecodeLabs\Nuance\Dumpable;
+use DecodeLabs\Nuance\Entity\NativeObject as NuanceEntity;
 use IteratorAggregate;
 
 /**
@@ -286,8 +287,10 @@ class Collection implements
     }
 
 
-    public function glitchDump(): iterable
+    public function toNuanceEntity(): NuanceEntity
     {
-        yield 'values' => $this->cookies;
+        $entity = new NuanceEntity($this);
+        $entity->values = $this->cookies;
+        return $entity;
     }
 }
