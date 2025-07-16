@@ -10,9 +10,9 @@ declare(strict_types=1);
 namespace DecodeLabs\Harvest\Middleware;
 
 use DecodeLabs\Harvest;
-use DecodeLabs\Monarch;
 use DecodeLabs\Harvest\Middleware as HarvestMiddleware;
 use DecodeLabs\Harvest\MiddlewareGroup;
+use DecodeLabs\Monarch;
 use Psr\Http\Message\ResponseInterface as PsrResponse;
 use Psr\Http\Message\ServerRequestInterface as PsrRequest;
 use Psr\Http\Server\RequestHandlerInterface as PsrHandler;

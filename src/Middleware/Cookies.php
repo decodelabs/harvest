@@ -11,7 +11,6 @@ namespace DecodeLabs\Harvest\Middleware;
 
 use DecodeLabs\Harvest;
 use DecodeLabs\Harvest\Cookie\Collection as CookieCollection;
-use DecodeLabs\Monarch;
 use DecodeLabs\Harvest\Middleware as HarvestMiddleware;
 use DecodeLabs\Harvest\MiddlewareGroup;
 use Psr\Http\Message\ResponseInterface as PsrResponse;
@@ -34,8 +33,8 @@ class Cookies implements HarvestMiddleware
     ): PsrResponse {
         $response = $next->handle($request);
 
-        if(!Harvest::$cookies->isEmpty()) {
-            if($response->hasHeader('Set-Cookie')) {
+        if (!Harvest::$cookies->isEmpty()) {
+            if ($response->hasHeader('Set-Cookie')) {
                 $collection = CookieCollection::from(
                     $response->getHeader('Set-Cookie')
                 );

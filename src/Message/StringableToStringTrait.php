@@ -15,7 +15,6 @@ use Stringable;
 
 trait StringableToStringTrait
 {
-
     /**
      * @template TContext of object
      * @param string|Stringable|Generator<string|Stringable>|Closure(TContext=):(string|Stringable|Generator<string|Stringable>) $content

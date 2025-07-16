@@ -17,7 +17,7 @@ trait ParameterTrait
 {
     public ?string $domain = null {
         set {
-            if(
+            if (
                 $value !== null &&
                 !preg_match('/^\.?(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$/', $value)
             ) {
@@ -32,7 +32,7 @@ trait ParameterTrait
 
     public ?string $path = null {
         set {
-            if(
+            if (
                 $value !== null &&
                 !preg_match('/^\/[\/\x21\x23-\x2B\x2D-\x3A\x3C-\x5B\x5D-\x7E]*$/', $value)
             ) {
@@ -49,9 +49,9 @@ trait ParameterTrait
         set(
             string|DateTimeInterface|null $value
         ) {
-            if(is_string($value)) {
+            if (is_string($value)) {
                 $value = new Carbon($value);
-            } elseif($value instanceof DateTimeInterface) {
+            } elseif ($value instanceof DateTimeInterface) {
                 $value = Carbon::instance($value);
             }
 
@@ -69,11 +69,11 @@ trait ParameterTrait
         set(
             string|SameSite|null $value
         ) {
-            if(is_string($value)) {
+            if (is_string($value)) {
                 $value = SameSite::fromName($value);
             }
 
-            if($value === SameSite::None) {
+            if ($value === SameSite::None) {
                 $this->secure = true;
             }
 
@@ -83,7 +83,7 @@ trait ParameterTrait
 
     public bool $partitioned = false {
         set {
-            if($value) {
+            if ($value) {
                 $this->secure = true;
             }
 

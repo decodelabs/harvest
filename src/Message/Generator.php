@@ -19,7 +19,6 @@ use Iterator as NativeIterator;
 use IteratorAggregate;
 use Psr\Http\Message\StreamInterface;
 use Throwable;
-use Traversable;
 
 class Generator implements
     StreamInterface,

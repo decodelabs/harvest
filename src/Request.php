@@ -25,32 +25,32 @@ class Request extends ClientRequest implements ServerRequestInterface
     /**
      * @var array<string,string|array<string, mixed>>|null
      */
-    protected(set) ?array $query = null;
+    public protected(set) ?array $query = null;
 
     /**
      * @var array<string,mixed>
      */
-    protected(set) array $attributes = [];
+    public protected(set) array $attributes = [];
 
     /**
      * @var array<string,string>
      */
-    protected(set) array $cookies = [];
+    public protected(set) array $cookies = [];
 
     /**
      * @var array<string,UploadedFileInterface|array<string,UploadedFileInterface>>
      */
-    protected(set) array $files = [];
+    public protected(set) array $files = [];
 
     /**
      * @var array<string,mixed>
      */
-    protected(set) array $server = [];
+    public protected(set) array $server = [];
 
     /**
      * @var array<mixed>|object|null
      */
-    protected(set) mixed $parsedBody = null;
+    public protected(set) mixed $parsedBody = null;
 
 
     /**

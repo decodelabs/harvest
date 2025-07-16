@@ -20,19 +20,19 @@ use Stringable;
 
 trait MessageTrait
 {
-    protected(set) string $protocol = '1.1';
+    public protected(set) string $protocol = '1.1';
 
     /**
      * @var array<string, array<string>>
      */
-    protected(set) array $headers = [];
+    public protected(set) array $headers = [];
 
     /**
      * @var array<string, string>
      */
-    protected(set) array $headerAliases = [];
+    public protected(set) array $headerAliases = [];
 
-    protected(set) StreamInterface $body;
+    public protected(set) StreamInterface $body;
 
     /**
      * @param array<string, string|Stringable|array<string|Stringable>> $headers
@@ -223,7 +223,7 @@ trait MessageTrait
     public static function normalizeHeader(
         string|Stringable|int|float|array|ArrayProvider $value
     ): array {
-        if($value instanceof ArrayProvider) {
+        if ($value instanceof ArrayProvider) {
             $value = $value->toArray();
         }
 
@@ -347,7 +347,7 @@ trait MessageTrait
         $parts = explode(';', $this->getHeaderLine('Content-Type'));
         $contentType = array_shift($parts);
 
-        return match($contentType) {
+        return match ($contentType) {
             'application/x-www-form-urlencoded' => $this->extractFormUrlEncoded(),
             'multipart/form-data' => $this->extractFormMultipart(),
             'application/json' => $this->extractJson(),

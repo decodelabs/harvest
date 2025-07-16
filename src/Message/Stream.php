@@ -12,7 +12,6 @@ namespace DecodeLabs\Harvest\Message;
 use Closure;
 use DecodeLabs\Deliverance\Channel\Stream as Channel;
 use DecodeLabs\Exceptional;
-use Deprecated;
 use Generator;
 use Psr\Http\Message\StreamInterface;
 use Stringable;

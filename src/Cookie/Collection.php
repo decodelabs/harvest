@@ -14,7 +14,6 @@ use Countable;
 use DateTimeInterface;
 use DecodeLabs\Collections\ArrayProvider;
 use DecodeLabs\Harvest\Cookie;
-use DecodeLabs\Harvest\Cookie\SameSite;
 use DecodeLabs\Nuance\Dumpable;
 use DecodeLabs\Nuance\Entity\NativeObject as NuanceEntity;
 use IteratorAggregate;
@@ -49,7 +48,7 @@ class Collection implements
     ): self {
         $instance = new self();
 
-        if(is_string($cookies)) {
+        if (is_string($cookies)) {
             $cookies = [$cookies];
         }
 
@@ -73,56 +72,56 @@ class Collection implements
     public function add(
         Cookie $cookie
     ): static {
-        if(
+        if (
             $this->domain !== null &&
             $cookie->domain === null
         ) {
             $cookie->domain = $this->domain;
         }
 
-        if(
+        if (
             $this->path !== null &&
             $cookie->path === null
         ) {
             $cookie->path = $this->path;
         }
 
-        if(
+        if (
             $this->expires !== null &&
             $cookie->expires === null
         ) {
             $cookie->expires = $this->expires;
         }
 
-        if(
+        if (
             $this->maxAge !== null &&
             $cookie->maxAge === null
         ) {
             $cookie->maxAge = $this->maxAge;
         }
 
-        if(
+        if (
             $this->secure &&
             !$cookie->secure
         ) {
             $cookie->secure = $this->secure;
         }
 
-        if(
+        if (
             $this->httpOnly &&
             !$cookie->httpOnly
         ) {
             $cookie->httpOnly = $this->httpOnly;
         }
 
-        if(
+        if (
             $this->sameSite !== null &&
             $cookie->sameSite === null
         ) {
             $cookie->sameSite = $this->sameSite;
         }
 
-        if(
+        if (
             $this->partitioned &&
             !$cookie->partitioned
         ) {

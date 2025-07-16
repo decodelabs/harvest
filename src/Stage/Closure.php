@@ -23,7 +23,7 @@ class Closure implements Stage
     use StageTrait;
 
     public string $name {
-        get => 'closure:'.spl_object_id($this->closure);
+        get => 'closure:' . spl_object_id($this->closure);
     }
 
     /**
@@ -38,7 +38,8 @@ class Closure implements Stage
                  * @var Callback(PsrRequest,PsrHandler):PsrResponse
                  */
                 protected Callback $closure
-            ) {}
+            ) {
+            }
 
             public function process(
                 PsrRequest $request,

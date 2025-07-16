@@ -12,7 +12,6 @@ namespace DecodeLabs\Harvest;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Harvest\Stage\Closure as ClosureStage;
 use Fiber;
-use IteratorAggregate;
 use Psr\Http\Message\ResponseInterface as PsrResponse;
 use Psr\Http\Message\ServerRequestInterface as PsrRequest;
 use Psr\Http\Server\RequestHandlerInterface as PsrHandler;
@@ -22,7 +21,8 @@ class Dispatcher implements PsrHandler
 {
     public function __construct(
         private Profile $profile
-    ) {}
+    ) {
+    }
 
     /**
      * Begin stage stack navigation

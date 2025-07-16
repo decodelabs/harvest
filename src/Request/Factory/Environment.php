@@ -48,7 +48,7 @@ class Environment implements ServerRequestFactoryInterface
         $cookies ??= $_COOKIE;
         $parsedBody = null;
 
-        if(
+        if (
             isset($headers['content-type']) &&
             (
                 str_starts_with($headers['content-type'], 'application/x-www-form-urlencoded') ||
@@ -186,7 +186,7 @@ class Environment implements ServerRequestFactoryInterface
     }
 
     /**
-     * @param array<string,mixed> &$output
+     * @param array<string,mixed> $output
      */
     protected function flattenNestedFiles(
         string $key,

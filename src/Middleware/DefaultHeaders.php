@@ -9,8 +9,6 @@ declare(strict_types=1);
 
 namespace DecodeLabs\Harvest\Middleware;
 
-use DecodeLabs\Harvest;
-use DecodeLabs\Monarch;
 use DecodeLabs\Harvest\Middleware as HarvestMiddleware;
 use DecodeLabs\Harvest\MiddlewareGroup;
 use Psr\Http\Message\ResponseInterface as PsrResponse;
@@ -30,7 +28,7 @@ class DefaultHeaders implements HarvestMiddleware
     /**
      * @var array<string,string>
      */
-    protected(set) array $headers = [
+    public protected(set) array $headers = [
         'X-Frame-Options' => 'SAMEORIGIN',
         'X-Content-Type-Options' => 'nosniff',
         'Referrer-Policy' => 'no-referrer-when-downgrade'
@@ -42,7 +40,7 @@ class DefaultHeaders implements HarvestMiddleware
     public function __construct(
         array $headers = []
     ) {
-        foreach($headers as $key => $value) {
+        foreach ($headers as $key => $value) {
             $this->setHeader($key, $value);
         }
     }
@@ -77,7 +75,7 @@ class DefaultHeaders implements HarvestMiddleware
     ): PsrResponse {
         $response = $next->handle($request);
 
-        foreach($this->headers as $key => $value) {
+        foreach ($this->headers as $key => $value) {
             if (!$response->hasHeader($key)) {
                 $response = $response->withHeader($key, $value);
             }

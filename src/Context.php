@@ -20,7 +20,6 @@ use DecodeLabs\Harvest;
 use DecodeLabs\Harvest\Cookie\Collection as CookieCollection;
 use DecodeLabs\Harvest\Message\Generator as MessageGenerator;
 use DecodeLabs\Harvest\Message\Stream;
-use DecodeLabs\Harvest\Middleware;
 use DecodeLabs\Harvest\Request\Factory\Environment as EnvironmentFactory;
 use DecodeLabs\Harvest\Response as HarvestResponse;
 use DecodeLabs\Harvest\Response\Html as HtmlResponse;
@@ -149,10 +148,10 @@ class Context implements UriFactory
         ServerRequest $request,
         mixed $response
     ): PsrResponse {
-        if($response instanceof Closure) {
+        if ($response instanceof Closure) {
             $ref = new ReflectionFunction($response);
 
-            if($ref->getNumberOfParameters() > 0) {
+            if ($ref->getNumberOfParameters() > 0) {
                 throw Exceptional::UnexpectedValue(
                     'Closure response must not accept any parameters'
                 );
@@ -165,23 +164,23 @@ class Context implements UriFactory
             return $response;
         }
 
-        if($response instanceof ResponseProxy) {
+        if ($response instanceof ResponseProxy) {
             return $response->toHttpResponse();
         }
 
-        if(is_object($response)) {
+        if (is_object($response)) {
             $class = Archetype::tryResolve(Transformer::class, get_class($response));
 
-            if($class) {
+            if ($class) {
                 return new $class()->transform($request, $response);
             }
         }
 
-        if($response instanceof Markup) {
+        if ($response instanceof Markup) {
             return $this->html($response);
         }
 
-        if(is_iterable($response)) {
+        if (is_iterable($response)) {
             return $this->json($response);
         }
 

@@ -26,7 +26,7 @@ class Cookie implements
 
     public string $name {
         set {
-            if(!preg_match('/^[!#$%&x\'*+\-.^_`|~0-9A-Za-z]+$/', $value)) {
+            if (!preg_match('/^[!#$%&x\'*+\-.^_`|~0-9A-Za-z]+$/', $value)) {
                 throw Exceptional::InvalidArgument(
                     'Invalid cookie name'
                 );
@@ -38,7 +38,7 @@ class Cookie implements
 
     public string $value {
         set {
-            if(preg_match('/[\x00-\x1F\x7F]/', $value)) {
+            if (preg_match('/[\x00-\x1F\x7F]/', $value)) {
                 throw Exceptional::InvalidArgument(
                     'Cookie value cannot contain control characters'
                 );
@@ -46,7 +46,7 @@ class Cookie implements
 
             $this->value = (string)preg_replace_callback(
                 '/[\s",;\\\\\'()<>@,;:\\"\/\[\]?={}\t]/',
-                fn($v) => rawurlencode($v[0]),
+                fn ($v) => rawurlencode($v[0]),
                 $value
             );
         }
@@ -61,7 +61,7 @@ class Cookie implements
     ): self {
         $parts = preg_split('/(?<!\\\\);(?=(?:[^"]*"[^"]*")*[^"]*$)/', $cookie);
 
-        if($parts === false) {
+        if ($parts === false) {
             throw Exceptional::InvalidArgument(
                 'Invalid cookie string'
             );
@@ -159,35 +159,35 @@ class Cookie implements
     {
         $output = $this->name . '=' . $this->value;
 
-        if($this->domain !== null) {
+        if ($this->domain !== null) {
             $output .= '; Domain=' . $this->domain;
         }
 
-        if($this->path !== null) {
+        if ($this->path !== null) {
             $output .= '; Path=' . $this->path;
         }
 
-        if($this->expires !== null) {
+        if ($this->expires !== null) {
             $output .= '; Expires=' . $this->expires->toRfc7231String();
         }
 
-        if($this->maxAge !== null) {
+        if ($this->maxAge !== null) {
             $output .= '; Max-Age=' . $this->maxAge;
         }
 
-        if($this->secure) {
+        if ($this->secure) {
             $output .= '; Secure';
         }
 
-        if($this->httpOnly) {
+        if ($this->httpOnly) {
             $output .= '; HttpOnly';
         }
 
-        if($this->sameSite !== null) {
+        if ($this->sameSite !== null) {
             $output .= '; SameSite=' . $this->sameSite->getName();
         }
 
-        if($this->partitioned) {
+        if ($this->partitioned) {
             $output .= '; Partitioned';
         }
 
@@ -235,5 +235,4 @@ class Cookie implements
 
         return $entity;
     }
-
 }

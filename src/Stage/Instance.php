@@ -25,7 +25,7 @@ class Instance implements Stage
         )->getShortName();
     }
 
-    protected(set) ?PsrMiddleware $middleware;
+    public protected(set) ?PsrMiddleware $middleware;
 
     public function __construct(
         PsrMiddleware $middleware

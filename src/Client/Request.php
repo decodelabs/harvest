@@ -34,9 +34,9 @@ class Request implements RequestInterface
     ];
 
 
-    protected(set) string $method = 'GET';
+    public protected(set) string $method = 'GET';
     protected ?string $target = null;
-    protected(set) Url $uri;
+    public protected(set) Url $uri;
 
 
     /**

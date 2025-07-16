@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace DecodeLabs\Harvest\Cookie;
 
 use DecodeLabs\Enumerable\Unit\Named;
-use DecodeLabs\Enumerable\Unit\NamedTrait;;
+use DecodeLabs\Enumerable\Unit\NamedTrait;
 
 enum SameSite implements Named
 {

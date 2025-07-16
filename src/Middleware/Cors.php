@@ -11,13 +11,12 @@ namespace DecodeLabs\Harvest\Middleware;
 
 use DecodeLabs\Harvest\Middleware as HarvestMiddleware;
 use DecodeLabs\Harvest\MiddlewareGroup;
-use DecodeLabs\Monarch;
 use Psr\Http\Message\ResponseInterface as PsrResponse;
 use Psr\Http\Message\ServerRequestInterface as PsrRequest;
 use Psr\Http\Server\RequestHandlerInterface as PsrHandler;
 
-class Cors implements HarvestMiddleware {
-
+class Cors implements HarvestMiddleware
+{
     public MiddlewareGroup $group {
         get => MiddlewareGroup::Outbound;
     }
@@ -66,7 +65,7 @@ class Cors implements HarvestMiddleware {
             $request->hasHeader('Access-Control-Request-Method') &&
             !$response->hasHeader('Access-Control-Allow-Headers')
         ) {
-            if(empty($this->headers)) {
+            if (empty($this->headers)) {
                 $headers = '*';
             } else {
                 $headers = implode(', ', $this->headers);

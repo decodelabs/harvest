@@ -10,8 +10,6 @@ declare(strict_types=1);
 namespace DecodeLabs\Harvest\Middleware;
 
 use DateTimeImmutable;
-use DecodeLabs\Harvest;
-use DecodeLabs\Monarch;
 use DecodeLabs\Harvest\Middleware as HarvestMiddleware;
 use DecodeLabs\Harvest\MiddlewareGroup;
 use Psr\Http\Message\ResponseInterface as PsrResponse;
@@ -34,14 +32,14 @@ class LastModified implements HarvestMiddleware
     ): PsrResponse {
         $response = $next->handle($request);
 
-        if(
+        if (
             $request->getMethod() !== 'GET' ||
             $response->getStatusCode() !== 200
         ) {
             return $response;
         }
 
-        if(
+        if (
             $this->isUnmodifiedSince($request, $response) ||
             $this->isEtagUnmodified($request, $response)
         ) {
@@ -58,7 +56,7 @@ class LastModified implements HarvestMiddleware
         $lastModified = $response->getHeaderLine('Last-Modified');
         $modifiedSince = explode(';', $request->getHeaderLine('If-Modified-Since'))[0];
 
-        if(
+        if (
             $lastModified === '' ||
             $modifiedSince === ''
         ) {
@@ -68,7 +66,7 @@ class LastModified implements HarvestMiddleware
         $lastModified = new DateTimeImmutable($lastModified);
         $modifiedSince = new DateTimeImmutable($modifiedSince);
 
-        if($lastModified->getTimestamp() > $modifiedSince->getTimestamp()) {
+        if ($lastModified->getTimestamp() > $modifiedSince->getTimestamp()) {
             return false;
         }
 
@@ -82,14 +80,14 @@ class LastModified implements HarvestMiddleware
         $etag = $response->getHeaderLine('ETag');
         $ifNoneMatch = $request->getHeaderLine('If-None-Match');
 
-        if(
+        if (
             $etag === '' ||
             $ifNoneMatch === ''
         ) {
             return false;
         }
 
-        if($etag !== $ifNoneMatch) {
+        if ($etag !== $ifNoneMatch) {
             return false;
         }
 

@@ -48,11 +48,11 @@ class Profile implements
     public function __construct(
         string|array|Closure|Stage|PsrMiddleware ...$middlewares
     ) {
-        foreach($middlewares as $key => $middleware) {
+        foreach ($middlewares as $key => $middleware) {
             // Array
             if (is_array($middleware)) {
                 if (is_string($key)) {
-                    /** @var array<string,mixed> $middleware  */
+                    /** @var array<string,mixed> $middleware */
                     $this->add(new DeferredStage(
                         type: $key,
                         parameters: $middleware
@@ -139,7 +139,7 @@ class Profile implements
             );
         }
 
-        if($group !== null) {
+        if ($group !== null) {
             $stage->group = $group;
         }
 
@@ -190,7 +190,7 @@ class Profile implements
 
         // Closure
         elseif ($middleware instanceof Closure) {
-            return 'closure:'.spl_object_id($middleware);
+            return 'closure:' . spl_object_id($middleware);
         }
 
         // Deferred
@@ -201,7 +201,7 @@ class Profile implements
 
     protected function sort(): void
     {
-        if($this->sorted) {
+        if ($this->sorted) {
             return;
         }
 
