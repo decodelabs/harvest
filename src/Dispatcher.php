@@ -81,8 +81,10 @@ class Dispatcher implements PsrHandler
 
             try {
                 if ($fiber->isSuspended()) {
+                    // @phpstan-ignore-next-line
                     $request = $fiber->resume($response);
                 } else {
+                    // @phpstan-ignore-next-line
                     $request = $fiber->start($request);
                 }
             } catch (Throwable $e) {

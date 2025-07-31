@@ -262,6 +262,7 @@ class Stream implements StreamInterface
             );
         }
 
+        /** @var string|false $output */
         $output = stream_get_contents($resource);
 
         if ($output === false) {

@@ -21,6 +21,8 @@ class Generic implements Transport
         'Set-Cookie'
     ];
 
+    protected const int ChunkSize = 4096;
+
     protected ?string $sendfile = null;
     protected bool $manualChunk = false;
 
@@ -79,10 +81,61 @@ class Generic implements Transport
             );
         }
 
+
         $status = $response->getStatusCode();
-        $phrase = $response->getReasonPhrase();
         $stream = $response->getBody();
+        $streamSeekable = $stream->isSeekable();
         $sendData = true;
+
+
+        // Add accept-ranges header
+        if (
+            $status === 200 &&
+            $streamSeekable
+        ) {
+            $response = $response->withHeader('Accept-Ranges', 'bytes');
+        }
+
+
+        // Check if we need to send a range
+        $range = $request->getHeaderLine('range');
+        $start = null;
+        $end = null;
+        $isRange = false;
+
+        if (
+            $status === 200 &&
+            $stream->isSeekable() &&
+            $range !== '' &&
+            null !== ($size = $stream->getSize()) &&
+            str_starts_with($range, 'bytes=')
+        ) {
+            $range = explode('=', $range);
+            $range = explode('-', $range[1]);
+
+            $start = (int)$range[0];
+            $end = (int)$range[1];
+            $isRange = true;
+
+
+            if (
+                $start > $end ||
+                $start < 0 ||
+                $end < 0 ||
+                $start > $size ||
+                $end > $size
+            ) {
+                $response = $response->withStatus($status = 416);
+                $sendData = false;
+            } else {
+                $response = $response->withStatus($status = 206);
+                $response = $response->withHeader('Content-Range', 'bytes ' . $start . '-' . $end . '/' . $size);
+                $response = $response->withHeader('Content-Length', (string)($end - $start + 1));
+            }
+        }
+
+        $phrase = $response->getReasonPhrase();
+
 
         // Send status
         $header = 'HTTP/' . $response->getProtocolVersion();
@@ -93,8 +146,6 @@ class Generic implements Transport
         }
 
         header($header, true, $status);
-
-
 
         /**
          * Send headers
@@ -128,6 +179,7 @@ class Generic implements Transport
 
         if (
             $sendData &&
+            !$isRange &&
             $this->sendfile !== null &&
             $stream->getMetadata('wrapper_type') === 'plainfile' &&
             ($filePath = $stream->getMetadata('uri'))
@@ -148,7 +200,7 @@ class Generic implements Transport
 
         // Send body if we need to
         if ($sendData) {
-            $this->sendBody($response);
+            $this->sendBody($response, $start, $end);
         }
     }
 
@@ -156,12 +208,18 @@ class Generic implements Transport
      * Send body data
      */
     protected function sendBody(
-        ResponseInterface $response
+        ResponseInterface $response,
+        ?int $start = null,
+        ?int $end = null
     ): void {
         $stream = $response->getBody();
 
         if ($stream->isSeekable()) {
             $stream->rewind();
+
+            if ($start > 0) {
+                $stream->seek($start);
+            }
         }
 
         while (ob_get_level() > 0) {
@@ -175,8 +233,27 @@ class Generic implements Transport
             $response->getHeaderLine('transfer-encoding') == 'chunked' :
             false;
 
-        while (!$stream->eof()) {
-            $chunk = $stream->read(4096);
+        if ($end !== null) {
+            $length = $end - $start + 1;
+        } else {
+            $length = null;
+        }
+
+        while (
+            !$stream->eof() &&
+            (
+                $length === null ||
+                $length > 0
+            )
+        ) {
+            if ($length !== null) {
+                $chunkSize = min($length, static::ChunkSize);
+                $length -= $chunkSize;
+            } else {
+                $chunkSize = static::ChunkSize;
+            }
+
+            $chunk = $stream->read($chunkSize);
 
             if ($isChunked) {
                 echo dechex(strlen($chunk)) . "\r\n";
