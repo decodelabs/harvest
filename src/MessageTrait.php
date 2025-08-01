@@ -92,6 +92,14 @@ trait MessageTrait
             $version = '1.1';
         }
 
+        if ($version === '2.0') {
+            $version = '2';
+        }
+
+        if ($version === '3.0') {
+            $version = '3';
+        }
+
         if (!preg_match('#^(1\.[01]|2)$#', (string)$version)) {
             throw Exceptional::InvalidArgument(
                 message: 'Invalid HTTP protocol version: ' . $version,

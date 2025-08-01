@@ -89,21 +89,23 @@ Harvest uses PHP Fibers to _flatten_ the call stack within the dispatch loop - t
 Instead of a call stack that grows by at least 2 frames for every Middleware instance in the queue (which gets unwieldy very quickly), Harvest utilises the flexbility of Fibers to break out of the stack at each call to the _next_ HTTP handler and effectively run each Middleware as if it were in a flat list, but without breaking Exception handling or any of the semantics of stacking the Middleware contexts.
 
 
-### Transports
+### ResponseHander and Transports
 
-Once a Response has been generated, you can then use an instance of a Harvest `Transport` to send it to the client.
+Once a Response has been generated, you can then use an instance of a Harvest `ResponseHandler` and `Transport` to prepare and send it to the client.
 
-Harvest currently provides a Generic Transport implementation that uses PHP's built in header and output stream functions.
+Harvest currently provides a generic `Native` Transport implementation that uses PHP's built in header and output stream functions.
 
 ```php
-use DecodeLabs\Harvest;
+use DecodeLabs\Harvest\ResponseHandler;
+use DecodeLabs\Harvest\Transport\Native as NativeTransport;
 
-$transport = Harvest::createTransport(
-    // $name - a null name will default to the Generic transport
+$handler = new ResponseHandler(
+    new NativeTransport()
 );
 
-$transport->sendResponse(
-    $request, $response
+$handler->sendResponse(
+    $request,
+    $response
 );
 
 exit;
