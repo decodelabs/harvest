@@ -5,10 +5,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Unreleased
+--
+
+---
+
+### [v0.6.0](https://github.com/decodelabs/harvest/commits/v0.6.0) - 1st August 2025
+
 - Refactored Transport interface to only deal with data transfer
 - Moved Response handling to ResponseHandler class
 - Added Channel transport for file streaming
 - Mirror HTTP protocol from Request to Response
+
+[Full list of changes](https://github.com/decodelabs/harvest/compare/v0.5.6...v0.6.0)
 
 ---
 
