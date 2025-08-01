@@ -43,6 +43,10 @@ class Range implements Stringable
 
     public function __toString(): string
     {
-        return 'bytes=' . $this->start . '-' . $this->end . '/' . ($this->size ?? '*');
+        if ($this->size === null) {
+            return sprintf('bytes=%d-%d/*', $this->start, $this->end);
+        }
+
+        return sprintf('bytes=%d-%d/%d', $this->start, $this->end, $this->size);
     }
 }
