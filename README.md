@@ -89,7 +89,7 @@ Harvest uses PHP Fibers to _flatten_ the call stack within the dispatch loop - t
 Instead of a call stack that grows by at least 2 frames for every Middleware instance in the queue (which gets unwieldy very quickly), Harvest utilises the flexbility of Fibers to break out of the stack at each call to the _next_ HTTP handler and effectively run each Middleware as if it were in a flat list, but without breaking Exception handling or any of the semantics of stacking the Middleware contexts.
 
 
-### ResponseHander and Transports
+### ResponseHandler and Transports
 
 Once a Response has been generated, you can then use an instance of a Harvest `ResponseHandler` and `Transport` to prepare and send it to the client.
 
