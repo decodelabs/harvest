@@ -33,6 +33,8 @@ use DecodeLabs\Harvest;
 use DecodeLabs\Harvest\Dispatcher;
 use DecodeLabs\Harvest\Middleware\ContentSecurityPolicy;
 use DecodeLabs\Harvest\Profile;
+use DecodeLabs\Harvest\Response\Text as TextResponse;
+use DecodeLabs\Monarch;
 
 // Create a Middleware Profile
 $profile = new Profile(
@@ -46,14 +48,15 @@ $profile = new Profile(
         // $request is the current request
 
         // Return a response
-        return Harvest::text('Hello World!');
+        return new TextResponse('Hello World!');
     }
 );
 
 // Create a Dispatcher
 $dispatcher = new Dispatcher($profile);
+$harvest = Monarch::getService(Harvest::class);
 
-$request = Harvest::createRequestFromEnvironment();
+$request = $harvest->createRequestFromEnvironment();
 $response = $dispatcher->dispatch($request);
 ```
 
@@ -116,29 +119,37 @@ exit;
 Harvest provides easy shortcuts for creating Responses:
 
 ```php
-use DecodeLabs\Harvest;
+use DecodeLabs\Harvest\Response\Text as TextResponse;
+use DecodeLabs\Harvest\Response\Html as HtmlResponse;
+use DecodeLabs\Harvest\Response\Json as JsonResponse;
+use DecodeLabs\Harvest\Response\Xml as XmlResponse;
+use DecodeLabs\Harvest\Response\Redirect as RedirectResponse;
+use DecodeLabs\Harvest\Response\Stream as StreamResponse;
+use DecodeLabs\Harvest\Response\Generator as GeneratorResponse;
 
-$text = Harvest::text('Hello World!'); // Text
+$text = new TextResponse('Hello World!'); // Text
 
-$customText = Harvest::text('Hello World!', 201, [
+$customText = new TextResponse('Hello World!', 201, [
     'Custom-Header' => 'header-value'
 ]);
 
-$html = Harvest::html('<h1>Hello World!</h1>'); // HTML
+$html = new HtmlResponse('<h1>Hello World!</h1>'); // HTML
 
-$json = Harvest::json([
+$json = new JsonResponse([
     'whatever-data' => 'Hello World!'
 ]); // JSON
 
-$xml = Harvest::xml($xmlString); // XML
+$xml = new XmlResponse($xmlString); // XML
 
-$redirect = Harvest::redirect('/some/other/path'); // Redirect
+$redirect = new RedirectResponse('/some/other/path'); // Redirect
 
-$file = Harvest::stream('/path/to/file'); // Stream
+$file = new StreamResponse('/path/to/file'); // Stream
 
-$resource = Harvest::stream(Harvest::createStreamFromResource($resource)); // Stream
+$resource = new StreamResponse(
+    $harvest->createStreamFromResource($resource)
+); // Stream
 
-$generator = Harvest::generator(function() {
+$generator = new GeneratorResponse(function() {
     yield 'Custom content';
     yield ' can be written';
     yield ' and streamed';
@@ -155,11 +166,9 @@ Harvest provides a `Cookies` Middleware and a global `Cookie Collection` that al
 
 
 ```php
-use DecodeLabs\Harvest;
-
 $profile->add('Cookies');
 
-Harvest::$cookies->set(
+$harvest->cookies->set(
     name: 'cookie-name',
     value: 'cookie-value',
     domain: 'example.com',
@@ -172,7 +181,7 @@ Harvest::$cookies->set(
     partitioned: true
 );
 
-Harvest::$cookies->expire(
+$harvest->cookies->expire(
     name: 'cookie-name',
     domain: 'example.com',
     path: '/',

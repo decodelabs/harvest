@@ -1,0 +1,43 @@
+<?php
+
+/**
+ * @package Harvest
+ * @license http://opensource.org/licenses/MIT
+ */
+
+declare(strict_types=1);
+
+namespace DecodeLabs\Harvest\Response;
+
+use Closure;
+use DecodeLabs\Harvest\Message\Stream as MessageStream;
+use DecodeLabs\Harvest\Message\StringableToStringTrait;
+use Generator;
+use Stringable;
+
+class Text extends Stream
+{
+    use StringableToStringTrait;
+
+    /**
+     * @param string|Stringable|Generator<string|Stringable>|Closure(self=):(string|Stringable|Generator<string|Stringable>) $text
+     * @param array<string, string|Stringable|array<string|Stringable>> $headers
+     */
+    public function __construct(
+        string|Stringable|Generator|Closure $text,
+        int $status = 200,
+        array $headers = []
+    ) {
+        parent::__construct(
+            MessageStream::fromString(
+                content: self::stringableToString($text, $this),
+                mode: 'wb+'
+            ),
+            $status,
+            $this->injectDefaultHeaders([
+                'content-type' => 'text/plain; charset=utf-8',
+                //'content-length' => strlen($text)
+            ], $headers)
+        );
+    }
+}

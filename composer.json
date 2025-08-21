@@ -11,18 +11,18 @@
     "require": {
         "php": "^8.4",
 
-        "decodelabs/archetype": "^0.3.10",
-        "decodelabs/coercion": "^0.3.3",
-        "decodelabs/collections": "^0.11.3",
-        "decodelabs/compass": "^0.3.1",
-        "decodelabs/deliverance": "^0.3.3",
-        "decodelabs/enumerable": "^0.2.7",
-        "decodelabs/exceptional": "^0.6.1",
-        "decodelabs/monarch": "^0.1.4",
-        "decodelabs/nuance": "^0.1.2",
-        "decodelabs/singularity": "^0.3.4",
-        "decodelabs/slingshot": "^0.2.1",
-        "decodelabs/veneer": "^0.12.8",
+        "decodelabs/archetype": "^0.4",
+        "decodelabs/coercion": "^0.3.5",
+        "decodelabs/collections": "^0.12",
+        "decodelabs/compass": "^0.4",
+        "decodelabs/deliverance": "^0.3.4",
+        "decodelabs/enumerable": "^0.2.8",
+        "decodelabs/exceptional": "^0.6.3",
+        "decodelabs/kingdom": "^0.1",
+        "decodelabs/monarch": "^0.2.1",
+        "decodelabs/nuance": "^0.1.9",
+        "decodelabs/singularity": "^0.4",
+        "decodelabs/slingshot": "^0.3",
 
         "psr/container": "^2.0.2",
         "psr/http-factory": "^1.1",
@@ -30,16 +30,18 @@
         "psr/http-server-handler": "^1.0.2",
         "psr/http-server-middleware": "^1.0.2",
 
-        "nesbot/carbon": "^3"
+        "nesbot/carbon": "^3.10.2"
     },
     "require-dev": {
-        "decodelabs/atlas": "^0.13.1",
+        "decodelabs/atlas": "^0.14.1",
+        "decodelabs/glitch": "^0.21",
         "decodelabs/phpstan-decodelabs": "^0.7",
-        "decodelabs/tagged": "^0.20.1"
+        "decodelabs/tagged": "^0.21"
     },
     "conflict": {
-        "decodelabs/atlas": "<0.13",
-        "decodelabs/tagged": "<0.20"
+        "decodelabs/atlas": "<0.14",
+        "decodelabs/glitch": "<0.21",
+        "decodelabs/tagged": "<0.21"
     },
     "provide": {
         "php-http/message-factory-implementation": "1.0",
@@ -51,10 +53,11 @@
     },
     "autoload": {
         "psr-4": {
-            "DecodeLabs\\Harvest\\": "src/"
+            "DecodeLabs\\Harvest\\": "src/Harvest/"
         },
-        "files": [
-            "src/Context.php"
+        "classmap": [
+            "src/Harvest.php",
+            "src/Kingdom/"
         ]
     },
     "extra": {
