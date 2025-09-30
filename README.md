@@ -15,6 +15,8 @@ Harvest provides a unified PSR-15 HTTP stack with a simple, expressive API on to
 
 ## Installation
 
+This package requires PHP 8.4 or higher.
+
 Install via Composer:
 
 ```bash
