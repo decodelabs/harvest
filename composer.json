@@ -20,7 +20,7 @@
         "decodelabs/exceptional": "^0.6.3",
         "decodelabs/kingdom": "^0.2",
         "decodelabs/monarch": "^0.2.1",
-        "decodelabs/nuance": "^0.1.9",
+        "decodelabs/nuance": "^0.2",
         "decodelabs/singularity": "^0.4",
         "decodelabs/slingshot": "^0.3",
 
@@ -34,7 +34,7 @@
     },
     "require-dev": {
         "decodelabs/atlas": "^0.14.1",
-        "decodelabs/glitch": "^0.21",
+        "decodelabs/glitch": "^0.22",
         "decodelabs/phpstan-decodelabs": "^0.7",
         "decodelabs/tagged": "^0.21"
     },
