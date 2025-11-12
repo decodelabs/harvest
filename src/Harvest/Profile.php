@@ -13,6 +13,8 @@ use ArrayIterator;
 use Closure;
 use Countable;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Fluidity\Then;
+use DecodeLabs\Fluidity\ThenTrait;
 use DecodeLabs\Harvest\Middleware\Cookies;
 use DecodeLabs\Harvest\Middleware\Cors;
 use DecodeLabs\Harvest\Middleware\DefaultHeaders;
@@ -38,8 +40,11 @@ use ReflectionClass;
 class Profile implements
     Countable,
     IteratorAggregate,
+    Then,
     Dumpable
 {
+    use ThenTrait;
+
     /**
      * @var array<string,Stage>
      */
