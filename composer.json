@@ -36,7 +36,7 @@
     },
     "require-dev": {
         "decodelabs/atlas": "^0.14.1",
-        "decodelabs/chorus": "^0.1",
+        "decodelabs/chorus": ">0",
         "decodelabs/glitch": "^0.22",
         "decodelabs/phpstan-decodelabs": "^0.7",
         "decodelabs/tagged": "^0.21"
