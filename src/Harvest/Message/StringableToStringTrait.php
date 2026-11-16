@@ -33,7 +33,18 @@ trait StringableToStringTrait
         }
 
         if ($content instanceof Generator) {
-            $content = implode('', iterator_to_array($content));
+            $chunks = iterator_to_array((
+                /**
+                 * @param iterable<mixed,string|Stringable> $input
+                 * @return \Generator<mixed,string|Stringable>
+                 */
+                static function (iterable $input): \Generator {
+                    foreach ($input as $key => $item) {
+                        yield $key ?? '' => $item;
+                    }
+                }
+            )($content));
+            $content = implode('', $chunks);
         }
 
         return (string)$content;
