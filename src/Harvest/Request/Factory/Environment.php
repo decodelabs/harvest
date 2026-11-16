@@ -396,6 +396,7 @@ class Environment implements ServerRequestFactoryInterface
             (?=\\n?[ \t]*$|;[ ])
         )x', $string, $matches, PREG_SET_ORDER);
 
+        /** @var list<array{name:string,value:string}> $matches */
         $cookies = [];
 
         foreach ($matches as $match) {

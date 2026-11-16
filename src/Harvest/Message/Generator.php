@@ -51,7 +51,6 @@ class Generator implements
         iterable|Closure $iterator,
         bool $buffer = true
     ) {
-        /** @phpstan-ignore-next-line */
         $this->iterator = (function () use ($iterator) {
             if ($iterator instanceof Closure) {
                 $this->fiber = new Fiber($iterator);

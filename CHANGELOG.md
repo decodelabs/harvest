@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Unreleased
 
+- Clarified cookie match types and removed an obsolete PHPStan ignore
 - Added AGENTS.md
 - Integrated Chorus dev dependency
 --
