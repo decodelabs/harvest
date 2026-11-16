@@ -5,11 +5,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Unreleased
+--
+
+---
+
+### [v0.7.4](https://github.com/decodelabs/harvest/commits/v0.7.4) - 16th November 2026
 
 - Clarified cookie match types and removed an obsolete PHPStan ignore
 - Added AGENTS.md
 - Integrated Chorus dev dependency
 --
+
+[Full list of changes](https://github.com/decodelabs/harvest/compare/v0.7.3...v0.7.4)
 
 ---
 
@@ -513,4 +520,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### [v0.1.0](https://github.com/decodelabs/harvest/commits/v0.1.0) - 30th October 2023
 
 - Built initial implementation
-
